@@ -12,6 +12,8 @@ services:
       - "manager1eth1:10.0.0.10"
       - "manager2eth1:10.0.0.11"
       - "manager3eth1:10.0.0.12"
+    environment:
+      - REGISTRY_PROXY_REMOTEURL=${REGISTRY_PROXY_REMOTEURL}
     secrets:
       - source: registry_mirror_config
         target: /etc/docker/registry/config.yml
