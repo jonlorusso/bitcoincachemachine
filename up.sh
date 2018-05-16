@@ -13,6 +13,6 @@ echo "Deploying proxyhost"
 echo "Creating swarm with 3 managers"
 ./managers/up.sh
 
-# echo "deploying an lxd host for nextcloud"
-# ./nextcloud/up.sh
+echo "deploying an bitcoin infrastructure."
+./bitcoin/up.sh
 

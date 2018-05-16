@@ -22,6 +22,13 @@ lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/hom
 # push docker.json for registry mirror settings
 lxc file push ./proxyhostfiles/daemon.json proxyhost/etc/docker/daemon.json
 
+sudo touch ~/.env
+sudo env | grep HTTP_PROXY >> ~/.env
+sudo env | grep HTTPS_PROXY >> ~/.env
+sudo env | grep DOCKER_REGISTRY_PROXY >> ~/.env
+
+lxc file push ~/.env proxyhost/root/ubuntu
+
 lxc start proxyhost
 
 sleep 15

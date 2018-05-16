@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 lxc delete --force proxyhost >/dev/null
 
 lxc network delete proxyhostnet >/dev/null

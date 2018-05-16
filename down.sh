@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
-echo "Destroying nextcloud"
-./nextcloud/down.sh >/dev/null
+echo "Destroying bitcoin"
+./bitcoin/down.sh >/dev/null
 
 echo "Destroying managers"
 ./managers/down.sh >/dev/null
@@ -12,3 +11,5 @@ echo "Destroying proxyhost"
 
 echo "Destrying host template"
 ./host_template/down.sh >/dev/null
+
+sudo rm -rf /home/ubuntu/.apps
