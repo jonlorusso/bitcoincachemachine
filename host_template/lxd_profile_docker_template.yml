@@ -16,15 +16,16 @@ config:
     #then enables it to be run at boot
     # /etc/systemd/system/docker.service.d is where we configure dockerd proxy settings
     #zfsutils-linux zfs-initramfs
+    # jq slurm tcptrack nmap docker-compose
     runcmd:
       - curl -fsSL get.docker.com -o get-docker.sh
       - sh get-docker.sh
-      - apt install -y slurm tcptrack nmap docker-compose wait-for-it jq
+      - apt install -y wait-for-it
       - mkdir -p /etc/systemd/system/docker.service.d       
       - systemctl stop docker
       - systemctl enable docker
       - echo "Done installing docker."
-
+ 
 description:
 devices:
   eth0:
