@@ -35,19 +35,3 @@ secrets:
 networks:
   managernet:
     attachable: true
-
-#       mirror:
-#     image: registry:2.6.2
-#     ports: 
-#       - "5000:5000/tcp"
-#     volumes:
-#       - mirror:/var/lib/registry
-#     environment:
-#       - REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io
-#     deploy:
-#       mode: replicated
-#       replicas: 1
-
-# volumes:
-#   mirror:
-#     driver: local

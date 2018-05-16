@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#lxc exec manager1 -- docker 
-
 lxc delete --force nextcloud >/dev/null
  
 lxc profile delete nextcloud
