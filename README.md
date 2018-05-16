@@ -1,4 +1,4 @@
-# bitcoincachemachine
+# Bitcoin Cache Machine
 
 An application that automatically deploys a pre-configured software-defined datacenter consisting of Bitcoin infrastructure including Lightning Network, messaging via Kafka, and a reporting and logging stack.  Run on bare-metal or VMs. The entire system only needs outbound HTTP/HTTPS and MUST be able to connect to the TOR network (outbound TCP 9050).
 

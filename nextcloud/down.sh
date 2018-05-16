@@ -10,7 +10,7 @@ lxc network delete nextcloudBridge
 
 sleep 2
 
-sudo rm -rf /home/derek/.apps/nextcloud
+sudo rm -rf /home/ubuntu/.apps/nextcloud
 
 sleep 5
 

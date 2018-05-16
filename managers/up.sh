@@ -7,9 +7,9 @@
 cd "$(dirname "$0")"
 
 
-mkdir -p /home/derek/.apps/manager1
-mkdir -p /home/derek/.apps/manager2
-mkdir -p /home/derek/.apps/manager3
+mkdir -p /home/ubuntu/.apps/manager1
+mkdir -p /home/ubuntu/.apps/manager2
+mkdir -p /home/ubuntu/.apps/manager3
 
 
 # create resources for workers
@@ -27,7 +27,7 @@ do
     ## start the managers
     lxc copy dockertemplate/dockerSnapshot $MANAGER
     lxc profile apply $MANAGER dockerpriv,$MANAGER
-    lxc config device add $MANAGER dockerdisk disk path=/var/lib/docker source=/home/derek/.apps/$MANAGER
+    lxc config device add $MANAGER dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/$MANAGER
     lxc file push ./https-proxy.conf $MANAGER/etc/systemd/system/docker.service.d/https-proxy.conf
     lxc file push ./daemon.json $MANAGER/etc/docker/daemon.json
     lxc start $MANAGER

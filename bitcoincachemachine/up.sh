@@ -3,7 +3,7 @@
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
-mkdir -p /home/derek/.apps/bcm
+mkdir -p /home/ubuntu/.apps/bcm
 
 # a network shared by./dep hosts needing outbound http proxy access (e.g., managers)
 lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false
@@ -18,7 +18,7 @@ lxc copy dockertemplate/dockerSnapshot proxyhost
 lxc profile apply proxyhost dockerpriv,proxyhostprofile
 
 # bind mount
-lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/derek/.apps/proxyhost
+lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/proxyhost
 
 # push docker.json for registry mirror settings
 lxc file push ./proxyhostfiles/daemon.json proxyhost/etc/docker/daemon.json
