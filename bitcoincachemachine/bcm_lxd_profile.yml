@@ -1,0 +1,39 @@
+config:
+  limits.cpu: "2"
+  limits.memory: "512MB"    
+
+  user.network-config: |
+    version: 1
+    config:      
+      #to lxdbr0 for outbound NAT
+      - type: physical
+        name: eth0
+        subnets:
+          - type: dhcp
+            ipv4: true
+            control: auto    
+      # proxyhostnet
+      - type: physical
+        name: eth1
+        subnets:
+          - type: static
+            ipv4: true
+            address: 10.254.254.2
+            netmask: 255.255.255.0
+            control: auto
+
+description:
+devices:
+  eth0:
+    nictype: bridged
+    parent: lxdbr0
+    type: nic
+  eth1:
+    nictype: bridged
+    parent: proxyhostnet
+    type: nic
+  root:
+    path: /
+    pool: bcm_data
+    type: disk
+name: lxd_profile_proxy_host

@@ -1,0 +1,12 @@
+version: 0.1
+storage:
+  filesystem:
+    rootdirectory: /data
+# This assumes the container can ping a host called proxyhost
+# that listens for HTTP/S requests on port 3128
+proxy:
+  remoteurl: http://nextcloud.farscapian.com:5000
+  
+http:
+  addr: :5000
+  secret: localdevsecret

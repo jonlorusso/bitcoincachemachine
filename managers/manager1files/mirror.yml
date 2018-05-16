@@ -1,0 +1,53 @@
+version: '3.4'
+services:
+  registry-mirror:
+    image: registry:2.6.2
+    ports: 
+      - "5000:5000"
+    networks:
+      managernet:
+    volumes:
+      - registrymirrorimage-data:/data
+    extra_hosts:
+      - "manager1eth1:10.0.0.10"
+      - "manager2eth1:10.0.0.11"
+      - "manager3eth1:10.0.0.12"
+    secrets:
+      - source: registry_mirror_config
+        target: /etc/docker/registry/config.yml
+        uid: '0'
+        gid: '0'
+        mode: 0644
+    deploy:
+      mode: global
+      placement:
+        constraints: 
+          - node.role == manager
+          
+volumes:
+  registrymirrorimage-data:
+    driver: local
+
+secrets:
+  registry_mirror_config:
+    file: mirror.conf.yml
+
+networks:
+  managernet:
+    attachable: true
+
+#       mirror:
+#     image: registry:2.6.2
+#     ports: 
+#       - "5000:5000/tcp"
+#     volumes:
+#       - mirror:/var/lib/registry
+#     environment:
+#       - REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io
+#     deploy:
+#       mode: replicated
+#       replicas: 1
+
+# volumes:
+#   mirror:
+#     driver: local
