@@ -47,8 +47,7 @@ lxc exec proxyhost -- docker swarm init --advertise-addr=10.254.254.2
 lxc exec proxyhost -- mkdir -p /app
 lxc file push ./proxyhostfiles/envtemp proxyhost/app/env
 lxc file push ./proxyhostfiles/mirror.yml proxyhost/app/mirror.yml
-lxc file push ./proxyhostfiles/mirror.conf.yml proxyhost/app/mirror.conf.yml
-lxc file push ./proxyhost_entrypoint.sh --create-dirs proxyhost/entrypoint.sh
+lxc file push ./proxyhostfiles/proxyhost_entrypoint.sh --create-dirs proxyhost/entrypoint.sh
 
 # change permissions and execute /entrypoint.sh
 lxc exec proxyhost -- chmod +x /entrypoint.sh
