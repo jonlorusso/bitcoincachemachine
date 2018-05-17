@@ -9,6 +9,6 @@ lxc profile delete dockerpriv >/dev/null
 lxc profile delete dockerunpriv >/dev/null
 
 # remove ubuntu:artful base image
-lxc image rm 986834fcb5d5
+#lxc image rm 986834fcb5d5
 
-lxc storage rm bcm_data
+#lxc storage rm bcm_data

@@ -1,12 +1,12 @@
-version: 0.1
-storage:
-  filesystem:
-    rootdirectory: /data
+# version: 0.1
+# storage:
+#   filesystem:
+#     rootdirectory: /data
 
-#  overridden by setting the PROXY_REMOTEURL_ environment variable
-proxy:
-  remoteurl: https://registry-1.docker.io
+# # #  overridden by setting the PROXY_REMOTEURL_ environment variable
+# # proxy:
+# #   remoteurl: https://registry-1.docker.io
 
-http:
-  addr: :5000
-  secret: localdevsecret
+# http:
+#   addr: :5000
+#   secret: localdevsecret
