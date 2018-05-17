@@ -13,6 +13,11 @@ echo "export HTTP_PROXY="$HTTP_PROXY"" >> ./proxyhostfiles/envtemp
 echo "export HTTPS_PROXY="$HTTPS_PROXY"" >> ./proxyhostfiles/envtemp
 echo "export REGISTRY_PROXY_REMOTEURL="$REGISTRY_PROXY_REMOTEURL"" >> ./proxyhostfiles/envtemp
 
+touch ./proxyhostfiles/daemon.json
+echo "" > ./proxyhostfiles/daemon.json
+echo "{\"registry-mirrors\": [\"$REGISTRY_PROXY_REMOTEURL\"]}" >> ./proxyhostfiles/daemon.json
+
+
 # a network shared by./dep hosts needing outbound http proxy access (e.g., managers)
 lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false
 

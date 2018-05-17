@@ -3,7 +3,7 @@ storage:
   filesystem:
     rootdirectory: /data
 
-#  overridden by setting the REGISTRY_REMOTEURL environment variable
+#  overridden by setting the PROXY_REMOTEURL_ environment variable
 proxy:
   remoteurl: https://registry-1.docker.io
 
