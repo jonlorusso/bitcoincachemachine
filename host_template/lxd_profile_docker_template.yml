@@ -31,8 +31,4 @@ devices:
     nictype: bridged
     parent: lxdbr0
     type: nic
-  root:
-    path: /
-    pool: bcm_data
-    type: disk
 name: docker.yml

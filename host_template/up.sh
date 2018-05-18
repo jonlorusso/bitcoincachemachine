@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ $(env | grep BCM) = '' ]] 
+then
+  echo "BCM variables not set.  Please source a .env file."
+  exit 1
+fi
+
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
@@ -8,23 +14,26 @@ lxc network create lxdbr0
 lxc storage create bcm_data zfs size=10GB
 
 # create necessary templates
-lxc profile create dockertemplate
-cat ./lxd_profile_docker_template.yml | lxc profile edit dockertemplate
+# default profile has our root device listed
+lxc profile create default
+cat ./default_lxd_profile.yml | lxc profile edit default
 
-lxc profile create dockerpriv
-cat ./lxd_profile_docker_privileged.yml | lxc profile edit dockerpriv
+# create necessary templates
+lxc profile create dockertemplate_profile
+cat ./lxd_profile_docker_template.yml | lxc profile edit dockertemplate_profile
 
 # lxc profile create dockerunpriv
 # cat ../shared/lxd_profile_docker_unprivileged.yml | lxc profile edit dockerunpriv
 
 #create the container (ubuntu:18.04)
-lxc init ubuntu:17.10 -p dockerpriv -p dockertemplate dockertemplate
+lxc init ubuntu:17.10 -p default -p dockertemplate_profile dockertemplate
 
 lxc start dockertemplate
 
-echo "Waiting for the LXC container to start and cloud-init to complete provisioning"
+
 # wait for cloud-init to finish
 # search for 'Cloud-init v. 18.2 finished at' waitforit type tail from file?"
+echo "Waiting for the LXC container to start and cloud-init to complete provisioning"
 lxc exec dockertemplate -- timeout 180 /bin/bash -c "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 2; done"
 
 # grab the reference snapshot
@@ -35,9 +44,12 @@ lxc exec dockertemplate -- touch /.dockerenv
 lxc file push ./sysctl.conf dockertemplate/etc/sysctl.conf
 lxc exec dockertemplate -- chmod 0644 /etc/sysctl.conf
 
-lxc snapshot dockertemplate dockerSnapshot
+
 
 # stop the template since we don't need it running anymore.
 lxc stop dockertemplate
 
+lxc profile remove dockertemplate dockertemplate_profile
+
+lxc snapshot dockertemplate dockerSnapshot
 

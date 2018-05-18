@@ -6,7 +6,7 @@ services:
     networks:
       - kafkanet
     ports:
-      - 2181:2181
+      - "2181:2181"
     volumes:
       - zoo1-data:/var/lib/zookeeper/data
       - zoo1-logs:/var/lib/zookeeper/log

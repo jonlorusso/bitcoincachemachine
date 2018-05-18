@@ -32,8 +32,4 @@ devices:
     nictype: bridged
     parent: proxyhostnet
     type: nic
-  root:
-    path: /
-    pool: bcm_data
-    type: disk
 name: lxd_profile_proxy_host

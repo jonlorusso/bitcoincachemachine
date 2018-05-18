@@ -33,8 +33,4 @@ devices:
     nictype: bridged
     parent: managernet
     type: nic
-  root:
-    path: /
-    pool: bcm_data
-    type: disk
 name: manager3.yml

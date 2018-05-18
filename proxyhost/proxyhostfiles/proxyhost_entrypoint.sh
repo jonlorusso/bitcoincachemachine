@@ -6,9 +6,11 @@ cd /app
 docker pull minimum2scp/squid:latest
 docker run -d -p 3128:3128 minimum2scp/squid:latest
 
-source /app/env
+# we're assuming BCM environment variables are properly
+# set by our provisioner at /etc/environment
+source /etc/environment
 
-# make it so all shell sessions share the proxy config
-sudo cat /app/env >> /root/.bashrc
+# make it so all sessions share the proxy config (for debugging)
+cat /etc/environment >> /root/.bashrc
 
 docker stack deploy -c /app/mirror.yml mirror

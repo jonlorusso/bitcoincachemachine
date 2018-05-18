@@ -5,35 +5,50 @@ cd "$(dirname "$0")"
 
 mkdir -p /home/ubuntu/.apps/proxyhost
 
-
-
-touch ./proxyhostfiles/envtemp
-echo "" > ./proxyhostfiles/envtemp
-echo "export HTTP_PROXY="$HTTP_PROXY"" >> ./proxyhostfiles/envtemp
-echo "export HTTPS_PROXY="$HTTPS_PROXY"" >> ./proxyhostfiles/envtemp
-echo "export REGISTRY_PROXY_REMOTEURL="$REGISTRY_PROXY_REMOTEURL"" >> ./proxyhostfiles/envtemp
-
-touch ./proxyhostfiles/daemon.json
-echo "" > ./proxyhostfiles/daemon.json
-echo "{\"registry-mirrors\": [\"$REGISTRY_PROXY_REMOTEURL\"]}" >> ./proxyhostfiles/daemon.json
-
-
 # a network shared by./dep hosts needing outbound http proxy access (e.g., managers)
 lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false
 
 lxc profile create proxyhostprofile
 cat ./lxd_profile_proxy_host.yml | lxc profile edit proxyhostprofile
 
-
 ## start the managers
 lxc copy dockertemplate/dockerSnapshot proxyhost
-lxc profile apply proxyhost dockerpriv,proxyhostprofile
+lxc profile apply proxyhost default,proxyhostprofile
 
-# bind mount
+# bind mount for /var/lib/docker
+# TODO get this to work with ZFS backend.
 lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/proxyhost
 
-# push docker.json for registry mirror settings
-lxc file push ./proxyhostfiles/daemon.json proxyhost/etc/docker/daemon.json
+# push environment variables passed through by provisioner
+# if running bare-metal, must source your environment prior to
+# execution.
+if [ "$BCM_ENVIRONMENT" = 'vm' ]
+then
+  lxc file push /etc/environment proxyhost/etc/environment
+elif [ "$BCM_ENVIRONMENT" = 'baremetal' ]
+then
+  touch ./proxyhostfiles/envtemp
+  
+  # clear it out first
+  echo "" > ./proxyhostfiles/envtemp
+  echo "export BCM_ENVIRONMENT=$BCM_ENVIRONMENT" >> ./proxyhostfiles/envtemp
+  echo "export HTTP_PROXY=$BCM_HTTP_PROXY" >> ./proxyhostfiles/envtemp
+  echo "export HTTPS_PROXY=$BCM_HTTPS_PROXY" >> ./proxyhostfiles/envtemp
+  echo "export REGISTRY_PROXY_REMOTEURL=$BCM_REGISTRY_PROXY_REMOTEURL" >>./proxyhostfiles/envtemp
+  lxc file push ./proxyhostfiles/envtemp proxyhost/etc/environment
+fi
+
+# generate and push docker.json for registry mirror settings
+# BCM_REGISTRY_PROTXY_REMOTEURL must be set.
+touch ./proxyhostfiles/daemon.json
+echo "" > ./proxyhostfiles/daemon.json
+echo "{\"registry-mirrors\": [\"$BCM_REGISTRY_PROXY_REMOTEURL\"]}" >> ./proxyhostfiles/daemon.json
+
+# if a registry was provided, modify and push daemon.json for proxyhost.
+if [ "$BCM_REGISTRY_PROXY_REMOTEURL" != '' ]
+then
+  lxc file push ./proxyhostfiles/daemon.json proxyhost/etc/docker/daemon.json
+fi
 
 lxc start proxyhost
 
@@ -45,9 +60,9 @@ lxc exec proxyhost -- docker swarm init --advertise-addr=10.254.254.2
 
 # push relevant files to the proxyhost
 lxc exec proxyhost -- mkdir -p /app
-lxc file push ./proxyhostfiles/envtemp proxyhost/app/env
 lxc file push ./proxyhostfiles/mirror.yml proxyhost/app/mirror.yml
-lxc file push ./proxyhostfiles/proxyhost_entrypoint.sh --create-dirs proxyhost/entrypoint.sh
+lxc file push ./proxyhostfiles/proxyhost_entrypoint.sh proxyhost/entrypoint.sh
+
 
 # change permissions and execute /entrypoint.sh
 lxc exec proxyhost -- chmod +x /entrypoint.sh

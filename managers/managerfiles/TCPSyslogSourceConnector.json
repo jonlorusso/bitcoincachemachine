@@ -1,5 +1,5 @@
 {
-  "name": "TCPSyslogSourceConnector",
+  "name": "syslog",
   "config": {
     "connector.class": "com.github.jcustenborder.kafka.connect.syslog.TCPSyslogSourceConnector",
     "tasks.max": "1",

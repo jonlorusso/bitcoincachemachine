@@ -5,27 +5,26 @@ config:
   user.network-config: |
     version: 1
     config:      
-      # managernet
-      - type: physical
-        name: eth0
-        subnets:
-          - type: static
-            ipv4: true
-            address: 10.254.254.2
-            netmask: 255.255.255.0
-            control: auto
-      #to proxynet for outbound NAT
+      # outbound Internet
       - type: physical
         name: eth0
         subnets:
           - type: dhcp
             ipv4: true
             control: auto   
+      # managernet
+      - type: physical
+        name: eth1
+        subnets:
+          - type: dhcp
+            ipv4: true
+            control: auto   
 description:
 devices:
+  # bitcoin host needs outbound access
   eth0:
     nictype: bridged
-    parent: proxyhostnet
+    parent: lxdbr0
     type: nic
   eth1:
     nictype: bridged
