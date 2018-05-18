@@ -3,7 +3,7 @@
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
-mkdir -p /home/ubuntu/.apps/proxyhost
+lxc storage create bcm_proxyhost_dockerdata zfs
 
 # a network shared by./dep hosts needing outbound http proxy access (e.g., managers)
 lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false
@@ -17,6 +17,7 @@ lxc profile apply proxyhost default,proxyhostprofile
 
 # bind mount for /var/lib/docker
 # TODO get this to work with ZFS backend.
+mkdir -p /home/ubuntu/.apps/proxyhost
 lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/proxyhost
 
 # push environment variables passed through by provisioner
@@ -42,7 +43,7 @@ fi
 # BCM_REGISTRY_PROTXY_REMOTEURL must be set.
 touch ./proxyhostfiles/daemon.json
 echo "" > ./proxyhostfiles/daemon.json
-echo "{\"registry-mirrors\": [\"$BCM_REGISTRY_PROXY_REMOTEURL\"]}" >> ./proxyhostfiles/daemon.json
+echo "{\"registry-mirrors\": [\"$BCM_REGISTRY_PROXY_REMOTEURL\"] }" >> ./proxyhostfiles/daemon.json
 
 # if a registry was provided, modify and push daemon.json for proxyhost.
 if [ "$BCM_REGISTRY_PROXY_REMOTEURL" != '' ]
@@ -52,7 +53,7 @@ fi
 
 lxc start proxyhost
 
-sleep 5
+sleep 10
 
 # this is just so we can use docker deploy commands.
 # TODO DISABLE DOCKER DAEMON API FOR SECURITY?
