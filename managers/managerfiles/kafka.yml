@@ -69,8 +69,8 @@ services:
 # OUTSIDE://manager1:9094 is how host access the service when thy can't attach to the overlay (preferred)
   #listens on 9092
   broker1:
-    image: confluentinc/cp-kafka:4.0.0-3
-    hostname: broker1host
+    image: confluentinc/cp-kafka:4.1.1-1
+    hostname: broker1
     networks:
       kafkanet:
         aliases:
@@ -87,8 +87,8 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 10.0.0.10:2181,10.0.0.11:2182,10.0.0.12:2183
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker1:9092,OUTSIDE://manager1:9094,PLAINTEXT://broker1:9090
-      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker1:9092,OUTSIDE://manager1:9094
+      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094   --,PLAINTEXT://broker1:9090
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -101,8 +101,8 @@ services:
 
   #listens on 9092
   broker2:
-    image: confluentinc/cp-kafka:4.0.0-3
-    hostname: broker2host
+    image: confluentinc/cp-kafka:4.1.1-1
+    hostname: broker2
     networks:
       kafkanet:
         aliases:
@@ -120,8 +120,8 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: 10.0.0.10:2181,10.0.0.11:2182,10.0.0.12:2183
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker2:9092,OUTSIDE://manager2:9095,PLAINTEXT://broker1:9090
-      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker2:9092,OUTSIDE://manager2:9095
+      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095 -- ,PLAINTEXT://broker2:9090
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -134,8 +134,8 @@ services:
 
   #listens on 9092
   broker3:
-    image: confluentinc/cp-kafka:4.0.0-3
-    hostname: broker3host
+    image: confluentinc/cp-kafka:4.1.1-1
+    hostname: broker3
     networks:
       kafkanet:
         aliases:
@@ -154,8 +154,8 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: 10.0.0.10:2181,10.0.0.11:2182,10.0.0.12:2183
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker3:9092,OUTSIDE://manager3:9096,PLAINTEXT://broker1:9090
-      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9096
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker3:9092,OUTSIDE://manager3:9096
+      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9096 - ,PLAINTEXT://broker3:9090
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
