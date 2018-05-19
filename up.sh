@@ -21,9 +21,9 @@ echo "creating an LXD system container template for running docker applications.
 echo "Deploying proxyhost"
 ./proxyhost/up.sh
 
-# echo "Creating swarm with 3 managers"
-# ./managers/up.sh
+echo "Creating swarm with 3 managers"
+./managers/up.sh
 
-# echo "deploying an bitcoin infrastructure."
-# ./bitcoin/up.sh
+echo "deploying an bitcoin infrastructure."
+./bitcoin/up.sh
 
