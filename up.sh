@@ -10,10 +10,9 @@ fi
 
 if [[ $(env | grep BCM) = '' ]] 
 then
-  echo "BCM variables not set."  Please source a .env file.""
+  echo "BCM variables not set. Please source a .env file."
   exit 1
 fi
-
 
 # set the working directory to the location where the script is located
 # since all file references are relative to this script
