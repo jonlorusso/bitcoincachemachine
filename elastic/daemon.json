@@ -1,0 +1,6 @@
+{
+    "registry-mirrors": ["http://manager1:5000", "http://manager2:5000", "http://manager3:5000"],
+    "labels": [
+        "host=elastic"
+    ]
+}

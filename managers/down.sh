@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 lxc delete --force manager1 >/dev/null
 lxc delete --force manager2 >/dev/null
 lxc delete --force manager3 >/dev/null

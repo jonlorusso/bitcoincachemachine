@@ -19,4 +19,8 @@ lxc network create managernet ipv4.address=10.0.0.1/24 ipv4.nat=false
 # create the manager template
 bash -c ./create_manager_template.sh
 
+sleep 5
+
 bash -c ./deployFromManagerSnapshot.sh
+
+sleep 5

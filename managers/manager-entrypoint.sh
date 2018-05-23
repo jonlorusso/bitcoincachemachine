@@ -9,13 +9,13 @@ docker stack deploy -c /app/kafka.yml kafka
 docker stack deploy -c /app/kafka-tools.yml kafkatools
 
 
-# Wait for necessary services then create a syslog connector on Kafka Connected
-# send REST command to Kafka to configure a TCP syslog connector
-wait-for-it -t 0 manager1:8082 -- wait-for-it -t 0 manager1:8081 -- wait-for-it -t 0 manager1:8083
+# # Wait for necessary services then create a syslog connector on Kafka Connected
+# # send REST command to Kafka to configure a TCP syslog connector
+# wait-for-it -t 0 manager1:8082 -- wait-for-it -t 0 manager1:8081 -- wait-for-it -t 0 manager1:8083
 
-sleep 90
+# sleep 90
 
-curl -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d @/app/TCPSyslogSourceConnector.json http://localhost:8083/connectors/
+# curl -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d @/app/TCPSyslogSourceConnector.json http://localhost:8083/connectors/
 
 
 # # run Consul

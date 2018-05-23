@@ -34,3 +34,6 @@ echo "Creating swarm with 3 managers"
 echo "deploying an bitcoin infrastructure."
 ./bitcoin/up.sh
 
+echo "deploying an elastic infrastructure."
+./elastic/up.sh
+

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-if [[ $(env | grep BCM) = '' ]] 
-then
-  echo "BCM variables not set.  Please source a .env file."
-  exit 1
-fi
-
 
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
+source ./environment
 
+if [[ $(env | grep BCM) = '' ]] 
+then
+  echo "BCM variables not set.  Please source an env file."
+  exit 1
+fi
 
 lxc profile create bitcoinprofile
 cat ./bitcoin_lxd_profile.yml | lxc profile edit bitcoinprofile
@@ -23,8 +23,8 @@ mkdir -p /home/ubuntu/.apps/bitcoin
 lxc config device add bitcoin dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/bitcoin
 
 # push docker.json for registry mirror settings
-lxc file push ./bitcoinhostfiles/daemon.json bitcoin/etc/docker/daemon.json
-
+lxc file push ./managerhostfiles/daemon.json bitcoin/etc/docker/daemon.json
+lxc file push ./environment bitcoin/etc/environment
 
 lxc start bitcoin
 
@@ -35,9 +35,18 @@ WORKER_TOKEN=$(lxc exec manager1 -- docker swarm join-token worker | grep token 
 
 lxc exec bitcoin -- docker swarm join 10.0.0.10 --token $WORKER_TOKEN
 
-lxc exec manager1 -- mkdir -p /app/bitcoin
-lxc file push ./bitcoinhostfiles/* --recursive --create-dirs manager1/app/bitcoin/
 
-# change permissions and execute /entrypoint.sh
-lxc exec manager1 -- chmod +x /app/bitcoin/up.sh
-lxc exec manager1 -- bash -c /app/bitcoin/up.sh
+
+lxc exec manager1 -- mkdir -p /app/bitcoin
+lxc file push ./managerhostfiles/* --recursive --create-dirs manager1/app/bitcoin/
+
+lxc exec bitcoin -- mkdir -p /app/bitcoin
+lxc file push ./bitcoinonlyfiles/bitcoin-entrypoint.sh bitcoin/app/bitcoin/
+lxc file push ./environment bitcoin/etc/environment
+lxc exec bitcoin -- chmod +x /app/bitcoin/bitcoin-entrypoint.sh
+lxc exec bitcoin -- bash -c /app/bitcoin/bitcoin-entrypoint.sh
+
+
+# # change permissions and execute /entrypoint.sh
+lxc exec manager1 -- chmod +x /app/bitcoin/manager-entrypoint.sh
+lxc exec manager1 -- bash -c /app/bitcoin/manager-entrypoint.sh
