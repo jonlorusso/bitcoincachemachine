@@ -31,7 +31,7 @@ services:
       mode: global
       placement:
         constraints: 
-          - engine.label == bitcoin
+          - engine.labels.purpose == bitcoin
 
   #for bitcoind to reach peer network
   torproxy:

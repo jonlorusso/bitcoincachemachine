@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Destrying elastic stuff"
+./elastic/down.sh >/dev/null
+
 echo "Destroying bitcoin"
 ./bitcoin/down.sh >/dev/null
 

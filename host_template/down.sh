@@ -12,4 +12,4 @@ lxc network delete lxdbr0
 # # remove ubuntu:artful base image
 #lxc image rm 986834fcb5d5
 
-#lxc storage rm bcm_data
+#xc storage rm bcm_data

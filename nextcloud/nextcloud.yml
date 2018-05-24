@@ -1,31 +1,29 @@
 config:
-  limits.cpu: 2
-  limits.memory: 2GB
+  limits.cpu: "2"
+  limits.memory: "1024MB"      
 
   user.network-config: |
     version: 1
     config:      
-      # managernet
+      # connect to proxyhost for outbound HTTP/S requests
       - type: physical
         name: eth0
         subnets:
           - type: dhcp
             ipv4: true
             control: auto
-                  # managernet
+      # so we can connect to managers    
       - type: physical
         name: eth1
         subnets:
           - type: dhcp
             ipv4: true
-            control: auto   
-
-
+            control: auto
 description:
 devices:
   eth0:
     nictype: bridged
-    parent: proxyhostnet
+    parent: nextcloudBridge
     type: nic
   eth1:
     nictype: bridged
@@ -35,4 +33,4 @@ devices:
     path: /
     pool: bcm_data
     type: disk
-name: lxd_profile_proxy_host
+name: docker.yml

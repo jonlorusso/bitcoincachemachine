@@ -19,7 +19,7 @@ config:
     runcmd:
       - curl -fsSL get.docker.com -o get-docker.sh
       - sh get-docker.sh
-      - apt install -y wait-for-it jq htop tcptrack slurm nmap
+      - apt install -y wait-for-it jq htop tcptrack slurm nmap docker-compose
       - mkdir -p /etc/systemd/system/docker.service.d       
       - systemctl stop docker
       - systemctl enable docker

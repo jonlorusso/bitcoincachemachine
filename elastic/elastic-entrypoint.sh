@@ -4,6 +4,4 @@
 # since all file references are relative to this script
 cd "$(dirname "$0")"
 
-source /etc/environment
-
-docker stack deploy -c kibana-stack.yml kibana
+docker-compose up -d
