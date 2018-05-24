@@ -57,7 +57,7 @@ sleep 10
 
 # this is just so we can use docker deploy commands.
 # TODO DISABLE DOCKER DAEMON API FOR SECURITY?
-lxc exec proxyhost -- docker swarm init --advertise-addr=10.254.254.2
+lxc exec proxyhost -- docker swarm init --advertise-addr=10.254.254.2 >> /dev/null
 
 # push relevant files to the proxyhost
 lxc exec proxyhost -- mkdir -p /app
