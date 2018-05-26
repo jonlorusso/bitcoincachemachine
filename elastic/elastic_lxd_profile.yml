@@ -12,22 +12,10 @@ config:
           - type: dhcp
             ipv4: true
             control: auto
-                  # managernet
-      - type: physical
-        name: eth1
-        subnets:
-          - type: dhcp
-            ipv4: true
-            control: auto   
-
 
 description:
 devices:
   eth0:
-    nictype: bridged
-    parent: proxyhostnet
-    type: nic
-  eth1:
     nictype: bridged
     parent: managernet
     type: nic

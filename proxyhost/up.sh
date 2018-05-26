@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 lxc storage create bcm_proxyhost_dockerdata zfs
 
 # a network shared by./dep hosts needing outbound http proxy access (e.g., managers)
-lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false
+lxc network create proxyhostnet ipv4.address=10.254.254.1/24 ipv4.nat=false ipv6.nat=false
 
 lxc profile create proxyhostprofile
 cat ./lxd_profile_proxy_host.yml | lxc profile edit proxyhostprofile
@@ -36,14 +36,21 @@ then
   echo "export HTTP_PROXY=$BCM_HTTP_PROXY" >> ./proxyhostfiles/envtemp
   echo "export HTTPS_PROXY=$BCM_HTTPS_PROXY" >> ./proxyhostfiles/envtemp
   echo "export REGISTRY_PROXY_REMOTEURL=$BCM_REGISTRY_PROXY_REMOTEURL" >>./proxyhostfiles/envtemp
+  echo "export BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL=$BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL" >>./proxyhostfiles/envtemp
   lxc file push ./proxyhostfiles/envtemp proxyhost/etc/environment
+
+  # configure docker daemon proxy HTTP proxy
+  echo "" > ./proxyhostfiles/https-proxy.conf
+  echo "[Service]" >> ./proxyhostfiles/https-proxy.conf
+  echo "Environment=\"HTTPS_PROXY=$BCM_HTTPS_PROXY/\"" >> ./proxyhostfiles/https-proxy.conf
+  lxc file push ./proxyhostfiles/https-proxy.conf proxyhost/etc/systemd/system/docker.service.d/https-proxy.conf
 fi
 
 # generate and push docker.json for registry mirror settings
 # BCM_REGISTRY_PROTXY_REMOTEURL must be set.
-touch ./proxyhostfiles/daemon.json
+touch ./proxyhostfiles/daemon.json  
 echo "" > ./proxyhostfiles/daemon.json
-echo "{\"registry-mirrors\": [\"$BCM_REGISTRY_PROXY_REMOTEURL\"] }" >> ./proxyhostfiles/daemon.json
+echo "{\"registry-mirrors\": [\"$BCM_REGISTRY_PROXY_REMOTEURL\", \"$BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL\"] }" >> ./proxyhostfiles/daemon.json
 
 # if a registry was provided, modify and push daemon.json for proxyhost.
 if [ "$BCM_REGISTRY_PROXY_REMOTEURL" != '' ]

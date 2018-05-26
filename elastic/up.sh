@@ -27,7 +27,7 @@ else
   # push docker.json for registry mirror settings
   lxc file push ./daemon.json elastic-template/etc/docker/daemon.json
   #lxc file push ./environment elastic-template/etc/environment
-  lxc file push ./proxyconfig.conf elastic-template/etc/systemd/system/docker.service.d/https-proxy.conf
+  #lxc file push ./proxyconfig.conf elastic-template/etc/systemd/system/docker.service.d/https-proxy.conf
   lxc file push ./sysctl.conf elastic-template/etc/sysctl.conf
   
   lxc snapshot elastic-template elasticStaged

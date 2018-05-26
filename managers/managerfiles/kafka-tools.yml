@@ -91,15 +91,15 @@ services:
 
   # REST commands come over 8083 to control the configuratino of kafka connect
   # Listens on TCP 514 (syslog)
-  syslog:
+  gelflistener:
     image: farscapian/logstash:latest
     ports:
       - "12201:12201/udp"
     networks:
       kafkanet:
-      syslognet:
-        aliases:
-          - syslog
+      # syslognet:
+      #   aliases:
+      #     - syslog
     configs:
       - source: logstash_config
         target: /etc/logstash.conf
@@ -220,9 +220,9 @@ networks:
 
   kafkarestnet:
 
-  syslognet:
-    driver: overlay
-    attachable: true
+  # syslognet:
+  #   driver: overlay
+  #   attachable: true
 
 
 configs:

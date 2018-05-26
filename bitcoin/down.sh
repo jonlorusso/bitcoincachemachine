@@ -6,6 +6,8 @@ lxc delete --force bitcoin >/dev/null
 
 lxc profile delete bitcoinprofile >/dev/null
 
+lxc network delete lxdbrBitcoin
+
 sudo rm -rf /home/ubuntu/.apps/bitcoin
 
 

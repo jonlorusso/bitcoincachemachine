@@ -1,0 +1,213 @@
+version: '3.4'
+services:
+  # seeds blockchain data to other nodes.
+  ipfscache:
+    image: ipfs/go-ipfs:latest
+    ports:
+      - "4001:4001/tcp"
+    volumes:
+      - ipfsdata:/data/ipfs
+    environment:
+      IPFS_PATH: /data/ipfs
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
+
+  # TODO initialize wallet interface.
+  bitcoind:
+    image: farscapian/bitcoind:latest
+    hostname: bitcoind
+    volumes:
+      - bitcoind-testnet-data:/data
+      - bitcoind-log-data:/logs/bitcoind
+      - bitcoind-cookie-data:/bitcoindcookie
+    environment:
+      BITCOIND_CHAIN: ${BCM_BITCOIN_CHAIN:-testnet}
+    depends_on:
+      - torproxy
+    networks:
+      rpcnet:
+        aliases:
+          - bitcoindrpc
+    secrets:
+      - source: bitcoin_config
+        target: /run/secrets/bitcoin.conf
+        uid: '999'
+        gid: '999'
+        mode: 0640
+    configs:
+      - source: bitcoindtorproxy-config
+        target: /var/lib/tor/torrc
+        uid: '0'
+        gid: '0'
+        mode: 0644
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
+
+  #lightning network daemon
+  lnd:
+    image: farscapian/lnd:latest
+    #hostname required for lncl-web certificate hostname purposes (see ./lnd/start-lnd.sh)
+    hostname: lnd
+    ports:
+      - "9735:9735"
+    # TODO ensure LND is going over TOR (when avaialable)
+    networks:
+      rpcnet:
+      lndrpcnet:
+        aliases:
+          - lndrpc
+    environment:
+      #LND_BITCOIND_REST_RPC_CREDENTIALS: "bitcoinrpcuser:qwc52LTHRa0w0UGiUr2z7fTz7JvqtxjULZ_2jaZvqmA="
+      LND_CERTIFICATE_HOSTNAME: "lnd"  #this is so there are no certificate verification issues on lncli-web
+      BITCOIND_CHAIN: ${CHAIN:-testnet}
+    volumes:
+      - lnd-data:/root/.lnd
+      - lnd-certificate-data:/config
+      - lnd-macaroon-data:/macaroons
+      - lnd-log-data:/logs/lnd
+    depends_on:
+      - bitcoind
+    secrets:
+      - source: lnd_conf
+        target: /root/.lnd/lnd.conf
+        uid: '0'
+        gid: '0'
+        mode: 0444
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
+
+
+  # Provides admin interface to lnd
+  # listens on 8280
+  lncli-web:
+    image: farscapian/lncliweb:latest
+    networks:
+      - rpcnet
+      - webproxynet
+    depends_on:
+      - lnd
+    volumes:
+      - lnd-certificate-data:/config:ro
+      - lnd-macaroon-data:/macaroons
+      - lnd-log-data:/logs/lnd
+    configs:
+      - source: lncli-web_config
+        target: /lncli-web/config/defaults.js
+        uid: '0'
+        gid: '0'
+        mode: 0644
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.label == bitcoin
+
+  # an nginx proxy that is hit after reaching onionservice.
+  # performs SSL termination, basic HTTP authentication, proxying to backend services
+  lncliwebonionproxy:
+    image: nginx:1.13.9-perl
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - webproxynet
+      - onionnet
+    depends_on:
+      - lndcli-web
+    configs:
+      - source: onionproxyconf
+        target: /etc/nginx/nginx.conf
+        uid: '33'
+        gid: '33'
+        mode: 0640
+    secrets:
+      - source: nginxbasicauth
+        target: /run/secrets/httpusers.txt
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.label == bitcoin
+
+
+  # public accessibity to downstream nginx server
+  onionservice:
+    image: goldy/tor-hidden-service
+    environment:
+      LNCLIWEBONIONPROXY_PORTS: 80:80
+      LNCLIWEBONIONPROXY_SERVICE_NAME: lncliwebonionproxy
+    depends_on:
+      - lncliwebonionproxy
+    volumes:
+      - onionservice-data:/var/lib/tor/hidden_service/
+    networks:
+      - onionnet
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.label == bitcoin
+
+secrets:
+  bitcoin_config:
+    file: "./bitcoind-${CHAIN:-testnet}.conf"
+  lnd_conf:
+    file: "./lnd-${CHAIN:-testnet}.conf"
+  nginxbasicauth:
+    file: ./secrets/httpusers.txt
+
+networks:
+  webproxynet:
+  onionnet: #how external peers reach bitcoind for block relay and peer network
+  tornet:  #how bitcoin connects to peer network
+  lndrpcnet:  #connect to this if you need to communicate with lnd RPC
+  rpcnet:
+    attachable: true
+
+volumes:
+  ipfsdata:
+    external: true
+  
+  bitcoind-testnet-data:
+    external: true
+  bitcoind-mainnet-data:
+    external: true
+  bitcoind-log-data:
+  bitcoind-cookie-data:
+
+  torproxy-log-data:
+
+  lnd-data:
+  lnd-log-data:
+
+
+  onionservice-data:
+    driver: local
+  
+  # anyone who needs to access lnd's gRPC or REST interface must have access to this data.
+  lnd-certificate-data:  
+  lnd-macaroon-data: 
+
+configs:
+  onionproxyconf:
+    file: ./onionproxy.nginx.conf
+  lncli-web_config:
+    file: ./lncli-web.lncliweb.conf.js
+  bitcoindtorproxy-config:
+    file: ./bitcoind.torrc
+  torproxy-config:
+    file: ./torproxy.torrc

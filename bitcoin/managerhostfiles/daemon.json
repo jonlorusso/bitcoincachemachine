@@ -1,10 +1,6 @@
 {
-    "registry-mirrors": ["http://manager1:5000", "http://manager2:5000", "http://manager3:5000"],
+    "registry-mirrors": [ "http://proxyhost:5000", "http://proxyhost:5001" ],
     "labels": [
         "purpose=bitcoin"
-    ],
-    "log-driver": "gelf",
-    "log-opts": {
-        "gelf-address": "udp://manager1:12201"
-    }
+    ]
 }

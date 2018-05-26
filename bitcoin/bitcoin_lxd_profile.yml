@@ -1,6 +1,6 @@
 config:
-  limits.cpu: "2"
-  limits.memory: "512MB"    
+  limits.cpu: "4"
+  limits.memory: "1024MB"    
 
   user.network-config: |
     version: 1
@@ -12,21 +12,37 @@ config:
           - type: dhcp
             ipv4: true
             control: auto   
-      # managernet
+      # for registry images
       - type: physical
         name: eth1
         subnets:
           - type: dhcp
             ipv4: true
-            control: auto   
+            control: auto
+      # managernet
+      - type: physical
+        name: eth2
+        subnets:
+          - type: dhcp
+            ipv4: true
+            control: auto  
 description:
 devices:
-  # bitcoin host needs outbound access
+  
+  # bitcoin host needs outbound access to expose TOR services
   eth0:
     nictype: bridged
-    parent: lxdbr0
+    parent: lxdbrBitcoin
     type: nic
+
+  # for registry images
   eth1:
+    nictype: bridged
+    parent: proxyhostnet
+    type: nic
+
+  # for connection to managers
+  eth2:
     nictype: bridged
     parent: managernet
     type: nic
