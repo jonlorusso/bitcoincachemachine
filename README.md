@@ -1,14 +1,17 @@
+
 # Bitcoin Cache Machine
 
-```
-***IMPORTANT!!!!*** Bitcoin Cache Machine is intended for testing purposes ONLY! It is very new and under heavy development by a single author, so there will be bugs!
-```
+> **IMPORTANT!!!!**
+> Bitcoin Cache Machine is intended for evaluation purposes ONLY!
+> It is very new and under heavy development by a single author
+> and HAS NOT undergone a formal security evaluation.
+> use at your own risk!!!!
 
-Bitcoin Cache Machine is a software-defined datacenter designed primarily for individuals and small businesses wanting to run their own Bitcoin full node software (e.g., a company, Bitcoin Maximalists, etc.,) and associated infrastructure. Bitcoin Cache Machine runs a fully validating Bitcoin Core node (v16.0), lightning network daemon (all implementations are planned), and a messaging (Kafka)/logging, and reporting stack. Bitcoin Cache Machine deploys in a fully automated fashion and runs on bare-metal, in a VM, or in the cloud.
+Bitcoin Cache Machine is a software-defined data center designed for individuals wanting assert control over their financial sovereignty by running and using their own bitcoin infrastructure. Bitcoin Cache Machine runs a fully validating Bitcoin Core node (v16.0), lightning network daemon (all implementations are planned), and a messaging (Kafka)/logging, and reporting stack. Bitcoin Cache Machine deploys in a fully automated fashion and runs on bare-metal, in a VM, or in the cloud.
 
 ## Introduction
 
-Bitcoin Cache Machine (BCM) is a software-defined datacenter solution that allows individuals to quickly deploy Bitcoin-related infrastructure including a fully-validating Bitcoin Core node (testnet supported at the moment), Lightning Network Daemon (lnd), associated wallet software, payment processing back-ends like BTCPay Server (planned), notifications (planned), etc.. Services with remote clients are exposed on the TOR overlay network. All BCM requires to function is a modern Linux kernel -- so it will run on-premise (preferred), in the cloud (discouraged), on bare-metal or in a VM. BCM is a solution to the "trusted-third-party" when it comes using blockchain infrastructure in a sovereign way. 
+Bitcoin Cache Machine (BCM) is a software-defined datacenter solution that allows individuals to quickly deploy Bitcoin-related infrastructure including a fully-validating Bitcoin Core node (testnet supported at the moment), Lightning Network Daemon (lnd), associated wallet software, payment processing back-ends like BTCPay Server (planned), notifications (planned), etc.. Services with remote clients are exposed on the TOR overlay network. All BCM requires to function is a modern Linux kernel -- so it will run on-premise (preferred), in the cloud (discouraged), on bare-metal or in a VM. BCM is a solution to the "trusted-third-party" when it comes using blockchain infrastructure in a sovereign way.
 
 Host your own bitcoin full node that operates entirely over TOR!
 Host your own integrated private block explorer, accessible over TOR (planned)!
