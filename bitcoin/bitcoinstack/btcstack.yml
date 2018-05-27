@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.6'
 services:
   # seeds blockchain data to other nodes.
   ipfscache:
@@ -162,6 +162,17 @@ services:
         constraints: 
           - engine.label == bitcoin
 
+  bitcoinstreams:
+    image: farscapian/bitcoinstreams:latest
+    networks:
+      kafkanet:
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.label == bitcoin
+
 secrets:
   bitcoin_config:
     file: "./bitcoind-${CHAIN:-testnet}.conf"
@@ -177,7 +188,9 @@ networks:
   lndrpcnet:  #connect to this if you need to communicate with lnd RPC
   rpcnet:
     attachable: true
-
+  kafkanet:
+    external: true
+    name: kafka_kafkanet
 volumes:
   ipfsdata:
     external: true

@@ -107,7 +107,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == manager1
+          - node.role == manager
 
   # # REST commands come over 8083 to control the configuratino of kafka connect
   # # Listens on TCP 514 (syslog)
