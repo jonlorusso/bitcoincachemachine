@@ -6,6 +6,8 @@ docker run -d -p 9000:9000 --restart always -v /var/run/docker.sock:/var/run/doc
 
 docker stack deploy -c /app/kafka.yml kafka
 
+sleep 3 
+
 docker stack deploy -c /app/kafka-tools.yml kafkatools
 
 

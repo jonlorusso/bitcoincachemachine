@@ -2,5 +2,9 @@
     "registry-mirrors": [ "http://proxyhost:5000", "http://proxyhost:5001" ],
     "labels": [
         "purpose=bitcoin"
-    ]
+    ],
+    "log-driver": "gelf",
+    "log-opts": {
+        "gelf-address": "tcp://manager1:12201"
+    }
 }

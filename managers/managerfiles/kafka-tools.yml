@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.6'
 services:
   # listens on alias schemaregistry:8081
   schema-registry:
@@ -11,7 +11,7 @@ services:
           - schemaregistry
       kafkanet:
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zoo1:2181,zoo2:2182,zoo3:2183
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper1:2181,zookeeper1:2181,zookeeper1:2181
       SCHEMA_REGISTRY_HOST_NAME: schemaregistry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_DEBUG: "true"
@@ -53,7 +53,7 @@ services:
     depends_on:
       - schema-registry
     environment:
-      KAFKA_REST_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper1:2181,zookeeper1:2181
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
       KAFKA_REST_HOST_NAME: kafkarest
@@ -89,17 +89,13 @@ services:
         constraints:
           - node.role == manager
 
-  # REST commands come over 8083 to control the configuratino of kafka connect
-  # Listens on TCP 514 (syslog)
+  # Listens for gelf messages on TCP
   gelflistener:
     image: farscapian/logstash:latest
     ports:
-      - "12201:12201/udp"
+      - "12201:12201/tcp"
     networks:
       kafkanet:
-      # syslognet:
-      #   aliases:
-      #     - syslog
     configs:
       - source: logstash_config
         target: /etc/logstash.conf
@@ -112,9 +108,6 @@ services:
       placement:
         constraints:
           - node.hostname == manager1
-
-
-
 
   # # REST commands come over 8083 to control the configuratino of kafka connect
   # # Listens on TCP 514 (syslog)
@@ -185,16 +178,13 @@ services:
   #   image: confluentinc/cp-enterprise-control-center
   #   ports:
   #     - "9021:9021"
-  #   depends_on:
-  #     - schema-registry
-  #     - kafka-connect
   #   networks:
   #     - kafkanet
   #     - kafkaconnectnet
   #   environment:
   #     #CONTROL_CENTER_BOOTSTRAP_SERVERS: broker1:9092,broker2:9092,broker3:9092
-  #     CONTROL_CENTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
-  #     CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
+  #     CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper1:2181,zookeeper1:2181
+  #     #CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
   #     CONTROL_CENTER_REPLICATION_FACTOR: 1
   #     CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1s
   #     CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
@@ -207,23 +197,14 @@ services:
   #       constraints:
   #         - node.role == manager
 
-
-
 networks:
   kafkanet:
-    external:
-      name: kafka_kafkanet
+    external: true
+    name: kafka_kafkanet
 
   schemaregistrynet:
-    driver: overlay
-    attachable: true
 
   kafkarestnet:
-
-  # syslognet:
-  #   driver: overlay
-  #   attachable: true
-
 
 configs:
   logstash_config:

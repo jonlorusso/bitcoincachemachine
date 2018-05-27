@@ -22,9 +22,6 @@ cat ./default_lxd_profile.yml | lxc profile edit default
 lxc profile create dockertemplate_profile
 cat ./lxd_profile_docker_template.yml | lxc profile edit dockertemplate_profile
 
-# lxc profile create dockerunpriv
-# cat ../shared/lxd_profile_docker_unprivileged.yml | lxc profile edit dockerunpriv
-
 #create the container (ubuntu:18.04)
 lxc init ubuntu:17.10 -p default -p dockertemplate_profile dockertemplate
 

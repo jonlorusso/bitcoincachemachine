@@ -30,10 +30,10 @@ WORKER_TOKEN=$(lxc exec manager1 -- docker swarm join-token worker | grep token 
 
 lxc exec bitcoin -- docker swarm join 10.0.0.10 --token $WORKER_TOKEN
 
-lxc exec bitcoin -- mkdir -p /app/bitcoinstack
-lxc file push ./bitcoinhostfiles/* --recursive --create-dirs bitcoin/app/bitcoinstack/
-lxc exec bitcoin -- chmod +x /app/bitcoinstack/bitcoin-entrypoint.sh
-lxc exec bitcoin -- bash -c /app/bitcoinstack/bitcoin-entrypoint.sh
+# lxc exec bitcoin -- mkdir -p /app/bitcoinstack
+# lxc file push ./bitcoinhostfiles/* --recursive --create-dirs bitcoin/app/bitcoinstack/
+# lxc exec bitcoin -- chmod +x /app/bitcoinstack/bitcoin-entrypoint.sh
+# lxc exec bitcoin -- bash -c /app/bitcoinstack/bitcoin-entrypoint.sh
 
 
 
