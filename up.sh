@@ -18,9 +18,10 @@ fi
 # since all file references are relative to this script
 cd "$(dirname "$0")"
 
-lxc config set core.proxy_http $BCM_HTTP_PROXY
-lxc config set core.proxy_https $BCM_HTTPS_PROXY
-lxc config set core.proxy_ignore_hosts image-server.local
+  # lxc config set core.proxy_http $BCM_HTTP_PROXY
+  # lxc config set core.proxy_https $BCM_HTTPS_PROXY
+  # lxc config set core.proxy_ignore_hosts image-server.local
+
 
 echo "creating an LXD system container template for running docker applications."
 ./host_template/up.sh
