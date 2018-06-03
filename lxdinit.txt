@@ -1,0 +1,10 @@
+config:
+  images.auto_update_interval: "0"
+cluster: null
+networks: []
+storage_pools: []
+profiles:
+- config: {}
+  description: ""
+  devices: {}
+  name: default

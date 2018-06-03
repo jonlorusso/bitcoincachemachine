@@ -5,19 +5,36 @@
 > Bitcoin Cache Machine is intended for evaluation purposes ONLY!
 > It is very new and under heavy development by a single author
 > and HAS NOT undergone a formal security evaluation.
-> use at your own risk!!!!
+> USE AT YOUR OWN RISK
 
-Bitcoin Cache Machine is a software-defined data center designed for individuals wanting assert control over their financial sovereignty by running and using their own bitcoin infrastructure. Bitcoin Cache Machine runs a fully validating Bitcoin Core node (v16.0), lightning network daemon (all implementations are planned), and a messaging (Kafka)/logging, and reporting stack. Bitcoin Cache Machine deploys in a fully automated fashion and runs on bare-metal, in a VM, or in the cloud.
+Bitcoin Cache Machine is a software-defined data center designed for individuals wanting their own bitcoin infrastructure. Bitcoin Cache Machine runs a fully validating Bitcoin Core node (v16.0), lightning network daemon (all implementations are planned), a messaging/logging stack, and reporting stack. Bitcoin Cache Machine deploys in a fully automated way and runs on bare-metal, in a VM, on-premise, or in the cloud. It's entirely based on Ubuntu 18.04 Bionic Beaver.
 
-## Introduction
+## Why does Bitcoin Cache Machine Exist?
 
-Bitcoin Cache Machine (BCM) is a software-defined datacenter solution that allows individuals to quickly deploy Bitcoin-related infrastructure including a fully-validating Bitcoin Core node (testnet supported at the moment), Lightning Network Daemon (lnd), associated wallet software, payment processing back-ends like BTCPay Server (planned), notifications (planned), etc.. Services with remote clients are exposed on the TOR overlay network. All BCM requires to function is a modern Linux kernel -- so it will run on-premise (preferred), in the cloud (discouraged), on bare-metal or in a VM. BCM is a solution to the "trusted-third-party" when it comes using blockchain infrastructure in a sovereign way.
+If you're invoved with Bitcoin or consider yourself a Bitcoin Maximalist, you will undoubtedly understand the importance of running your own Bitcoin node software. Running a Bitcoin full node is easy enough--just download the software and run it on your home machine. Although running your own Bitcoin full node provides the best form of privacy, there are many other areas where your privacy can be leaked, such as using a third party block explorer or wallet software. 
 
-Host your own bitcoin full node that operates entirely over TOR!
-Host your own integrated private block explorer, accessible over TOR (planned)!
-Run Lightning Network Daemon, c-light, and eClair to transaction or provide liquidiity to the lightning network!  TOR integrated when supported!
+BCM is meant to bridge that gap by providing a fully automated mechanism to deploy your own Bitcoin infrastructure. BCM is pre-configured to protect user's privacy. Services provided by BCM are exposed on the TOR overlay network providing a very cloud-like experience while anonymizing your IP information and providing end-to-end confidentiality (encryption).
+
+The goal of BCM is to integrate as many of the open-source Bitcoin-related projects out there into an easily deployable format. This includes running associated Lightning Network Daemons (lnd, c-lightning, eclair) for receiving and generating invoices.
+
+## Architecture
+
+BCM is built entirely on Ubuntu 18.04 Bionic Beaver. BCM can run inside a VM or on bare-metal (preferred).  LXD/LXC system containers are used to provision system-level containers (analogous to a VM in the cloud). Docker daemon runs in each LXD system container and is responsible for running application-specific containers.
+
+
+## Currently implemented features
+
+* Host your own Bitcoin full node (version 16.0). Bitcoind is configured to use TOR hidden services for peer-to-peer network communication.  RPC interfaces MAY be exposed as a TOR hidden service for client wallet software that supports direct communication (e.g., Samouri Wallet)
+* Lightning Network Daemon and lncli-web wallet interface
 Host your own Nextcloud Instance (planned)!
 Host your own secure email infrastructure (planned)!
+
+
+## Planned Features
+
+* Host your own integrated pric-light, and eClair to transaction or provide liquidiity to the lightning network!  TOR integratedvate block explorer, accessible over TOR (planned)!
+* ZAP wallet integration with LND
+
 
 TCP 9050 (TOR) outbound is required for BCM to function. This is required since BCM exposes some of the services on the TOR overlay network facilitating client connections (e.g., a wallet app on your phone, or maybe a block explorer). This allows you to host your own infrastructure while maintaining a very cloud-like feel, all without having to fiddle with your external firewall.
 

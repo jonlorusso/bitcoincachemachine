@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [[ $(env | grep BCM) = '' ]] 
-then
-  echo "BCM variables not set.  Please source a .env file."
-  exit 1
-fi
-
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
@@ -15,7 +9,7 @@ lxc storage create bcm_data zfs size=10GB
 
 # create necessary templates
 # default profile has our root device listed
-lxc profile create default
+
 cat ./default_lxd_profile.yml | lxc profile edit default
 
 # create necessary templates
@@ -23,15 +17,18 @@ lxc profile create dockertemplate_profile
 cat ./lxd_profile_docker_template.yml | lxc profile edit dockertemplate_profile
 
 #create the container (ubuntu:18.04)
-lxc init ubuntu:17.10 -p default -p dockertemplate_profile dockertemplate
+#lxc init ubuntu:17.10 -p default -p dockertemplate_profile dockertemplate
+lxc init ubuntu:18.04 -p default -p dockertemplate_profile dockertemplate
 
 lxc start dockertemplate
 
-
+sleep 5
 # wait for cloud-init to finish
-# search for 'Cloud-init v. 18.2 finished at' waitforit type tail from file?"
+
 echo "Waiting for the LXC container to start and cloud-init to complete provisioning"
 lxc exec dockertemplate -- timeout 180 /bin/bash -c "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 2; done"
+
+sleep 5
 
 # grab the reference snapshot
 ## checking if this alleviates docker swarm troubles in lxc.
@@ -43,7 +40,7 @@ lxc exec dockertemplate -- chmod 0644 /etc/sysctl.conf
 
 
 
-# stop the template since we don't need it running anymore.
+# # # stop the template since we don't need it running anymore.
 lxc stop dockertemplate
 
 lxc profile remove dockertemplate dockertemplate_profile
