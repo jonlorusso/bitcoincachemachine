@@ -11,6 +11,15 @@ config:
             
   user.user-data: |
     #cloud-config
+    package_update: true
+    
+    packages:
+      - wait-for-it 
+      - jq
+      - htop
+      - tcptrack
+      - slurm
+      - nmap
 
     #the last commands stop docker daemon
     #then enables it to be run at boot
@@ -18,8 +27,7 @@ config:
     #zfsutils-linux zfs-initramfs
     runcmd:
       - curl -fsSL test.docker.com | sh
-      - apt install -y wait-for-it jq htop tcptrack slurm nmap docker-compose
-      - mkdir -p /etc/systemd/system/docker.service.d       
+      - mkdir -p /etc/systemd/system/docker.service.d
       - systemctl stop docker
       - systemctl enable docker
  

@@ -32,10 +32,10 @@ echo "export REGISTRY_PROXY_REMOTEURL=$BCM_REGISTRY_PROXY_REMOTEURL" >>./proxyho
 echo "export BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL=$BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL" >>./proxyhostfiles/envtemp
 lxc file push ./proxyhostfiles/envtemp proxyhost/etc/environment
 
-# configure docker daemon proxy HTTP proxy
+# # configure docker daemon proxy HTTP proxy
 echo "" > ./proxyhostfiles/https-proxy.conf
 echo "[Service]" >> ./proxyhostfiles/https-proxy.conf
-echo "Environment=\"HTTPS_PROXY=$BCM_HTTPS_PROXY/\"" >> ./proxyhostfiles/https-proxy.conf
+echo "Environment=\"HTTPS_PROXY=$HTTPS_PROXY/\"" >> ./proxyhostfiles/https-proxy.conf
 lxc file push ./proxyhostfiles/https-proxy.conf proxyhost/etc/systemd/system/docker.service.d/https-proxy.conf
 
 

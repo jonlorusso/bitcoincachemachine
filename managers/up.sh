@@ -18,12 +18,12 @@ sleep 5
 
 bash -c ./stage_managers.sh
 
-#sleep 20
+sleep 20
 
-# bash -c ./create_swarm.sh
+bash -c ./create_swarm.sh
 
-# sleep 5
+sleep 5
 
-# # execute /entrypoint.sh
-# lxc exec manager1 -- chmod +x /entrypoint.sh
-# lxc exec manager1 -- bash -c /entrypoint.sh
+# execute /entrypoint.sh
+lxc exec manager1 -- chmod +x /entrypoint.sh
+lxc exec manager1 -- bash -c /entrypoint.sh

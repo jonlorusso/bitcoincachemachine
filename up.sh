@@ -20,8 +20,8 @@ lxc config set core.proxy_ignore_hosts image-server.local
 echo "creating an LXD system container template for running docker applications."
 ./host_template/up.sh
 
-echo "Deploying proxyhost"
-./proxyhost/up.sh
+# echo "Deploying proxyhost"
+# ./proxyhost/up.sh
 
 # echo "Creating swarm with 3 managers"
 # ./managers/up.sh
