@@ -1,5 +1,0 @@
-
-#DataDirectory /var/lib/tor
-
-## Send all messages of level 'notice' or higher to /var/log/tor/notices.log
-# Log notice file /logs/notices.log

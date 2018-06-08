@@ -15,15 +15,12 @@
 # docker build -t farscapian/lncliweb:latest ./lncliweb/
 # docker push farscapian/lncliweb:latest
 
-
-
 echo "Building and pushing bitcoin streams app."
-# adds start script for waiting on lnd rpc to come online
 docker build -t farscapian/bitcoinstreams:latest ./streams/
-#docker push farscapian/bitcoinstreams:latest
+docker push farscapian/bitcoinstreams:latest
 
 
-# echo "Building and pushing onionproxy."
-# # adds start script for waiting on lnd rpc to come online
-# docker build -t $BCM_ONIONPROXY_IMAGE ./onionproxy/
-# docker push $BCM_ONIONPROXY_IMAGE
+echo "Building and pushing clightning image."
+docker build -t farscapian/clightning:latest ./clightning/
+docker push farscapian/clightning:latest
+
