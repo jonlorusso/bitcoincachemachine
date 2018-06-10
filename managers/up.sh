@@ -27,3 +27,8 @@ sleep 5
 # execute /entrypoint.sh
 lxc exec manager1 -- chmod +x /entrypoint.sh
 lxc exec manager1 -- bash -c /entrypoint.sh
+
+
+
+# PORT=8000 PUBLIC_IP=10.92.17.196 CONTAINER_IP=10.0.0.10
+# sudo iptables -t nat -I PREROUTING -i ens3 -p TCP -d $PUBLIC_IP --dport $PORT -j DNAT --to-destination $CONTAINER_IP:$PORT -m comment --comment "test"

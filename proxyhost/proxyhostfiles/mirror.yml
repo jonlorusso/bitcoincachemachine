@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.4'
 services:
   registry-mirror:
     image: registry:2.6.2
@@ -16,31 +16,9 @@ services:
       mode: replicated
       replicas: 1
 
-
-  elastic-registry-mirror:
-    image: registry:2.6.2
-    ports: 
-      - "5001:5001"
-    networks:
-      - elasticregistrynet
-    volumes:
-      - elasticregistrymirrorimage-data:/data
-    environment:
-      REGISTRY_PROXY_REMOTEURL: ${BCM_ELASTIC_REGISTRY_PROXY_REMOTEURL:-http://docker.elastic.co}
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
-      REGISTRY_HTTP_ADDR: 0.0.0.0:5001
-    deploy:
-      mode: replicated
-      replicas: 1
-
 volumes:
   registrymirrorimage-data:
     driver: local
 
-  elasticregistrymirrorimage-data:
-    driver: local
-
-
 networks:
-  elasticregistrynet:
   registrynet:

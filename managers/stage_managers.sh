@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # create manager1, manager2, and manager3 from the template snapshot
 for MANAGER in manager1 manager2 manager3
 do	

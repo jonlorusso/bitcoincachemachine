@@ -38,9 +38,9 @@ lxc exec dockertemplate -- touch /.dockerenv
 lxc file push ./sysctl.conf dockertemplate/etc/sysctl.conf
 lxc exec dockertemplate -- chmod 0644 /etc/sysctl.conf
 
+sleep 5
 
-
-# # # # stop the template since we don't need it running anymore.
+# stop the template since we don't need it running anymore.
 lxc stop dockertemplate
 
 lxc profile remove dockertemplate dockertemplate_profile
