@@ -34,4 +34,3 @@ devices:
     parent: lxdbr0
     type: nic
 name: docker.yml
-

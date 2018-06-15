@@ -1,20 +1,18 @@
-version: '3.6'
+version: '3.4'
 services:
   # seeds blockchain data to other nodes.
-  # ipfscache:
-  #   image: ipfs/go-ipfs:latest
-  #   # ports:
-  #   #   - "4001:4001/tcp"
-  #   volumes:
-  #     - ipfsdata:/data/ipfs
-  #   environment:
-  #     IPFS_PATH: /data/ipfs
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     placement:
-  #       constraints: 
-  #         - engine.labels.purpose == bitcoin
+  ipfscache:
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - ipfsdata:/data/ipfs
+    environment:
+      IPFS_PATH: /data/ipfs
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
 
   # TODO initialize wallet interface.
   bitcoind:
@@ -51,42 +49,42 @@ services:
         constraints: 
           - engine.labels.purpose == bitcoin
 
-  # #lightning network daemon
-  # lnd:
-  #   image: farscapian/lnd:latest
-  #   #hostname required for lncl-web certificate hostname purposes (see ./lnd/start-lnd.sh)
-  #   hostname: lnd
-  #   ports:
-  #     - "9735:9735"
-  #   # TODO ensure LND is going over TOR (when avaialable)
-  #   networks:
-  #     rpcnet:
-  #     lndrpcnet:
-  #       aliases:
-  #         - lndrpc
-  #   environment:
-  #     #LND_BITCOIND_REST_RPC_CREDENTIALS: "bitcoinrpcuser:qwc52LTHRa0w0UGiUr2z7fTz7JvqtxjULZ_2jaZvqmA="
-  #     LND_CERTIFICATE_HOSTNAME: "lnd"  #this is so there are no certificate verification issues on lncli-web
-  #     BITCOIND_CHAIN: ${CHAIN:-testnet}
-  #   volumes:
-  #     - lnd-data:/root/.lnd
-  #     - lnd-certificate-data:/config
-  #     - lnd-macaroon-data:/macaroons
-  #     - lnd-log-data:/logs/lnd
-  #   depends_on:
-  #     - bitcoind
-  #   secrets:
-  #     - source: lnd_conf
-  #       target: /root/.lnd/lnd.conf
-  #       uid: '0'
-  #       gid: '0'
-  #       mode: 0444
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     placement:
-  #       constraints: 
-  #         - engine.labels.purpose == bitcoin
+  #lightning network daemon
+  lnd:
+    image: farscapian/lnd:latest
+    #hostname required for lncl-web certificate hostname purposes (see ./lnd/start-lnd.sh)
+    hostname: lnd
+    ports:
+      - "9735:9735"
+    # TODO ensure LND is going over TOR (when avaialable)
+    networks:
+      rpcnet:
+      lndrpcnet:
+        aliases:
+          - lndrpc
+    environment:
+      #LND_BITCOIND_REST_RPC_CREDENTIALS: "bitcoinrpcuser:qwc52LTHRa0w0UGiUr2z7fTz7JvqtxjULZ_2jaZvqmA="
+      LND_CERTIFICATE_HOSTNAME: "lnd"  #this is so there are no certificate verification issues on lncli-web
+      BITCOIND_CHAIN: ${CHAIN:-testnet}
+    volumes:
+      - lnd-data:/root/.lnd
+      - lnd-certificate-data:/config
+      - lnd-macaroon-data:/macaroons
+      - lnd-log-data:/logs/lnd
+    depends_on:
+      - bitcoind
+    secrets:
+      - source: lnd_conf
+        target: /root/.lnd/lnd.conf
+        uid: '0'
+        gid: '0'
+        mode: 0444
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
 
 
   #lightning network daemon
@@ -122,31 +120,31 @@ services:
           - engine.labels.purpose == bitcoin
 
 
-  # # Provides admin interface to lnd
-  # # listens on 8280
-  # lncli-web:
-  #   image: farscapian/lncliweb:latest
-  #   networks:
-  #     - rpcnet
-  #     - webproxynet
-  #   depends_on:
-  #     - lnd
-  #   volumes:
-  #     - lnd-certificate-data:/config:ro
-  #     - lnd-macaroon-data:/macaroons
-  #     - lnd-log-data:/logs/lnd
-  #   configs:
-  #     - source: lncli-web_config
-  #       target: /lncli-web/config/defaults.js
-  #       uid: '0'
-  #       gid: '0'
-  #       mode: 0644
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     placement:
-  #       constraints: 
-  #         - engine.label == bitcoin
+  # Provides admin interface to lnd
+  # listens on 8280
+  lncli-web:
+    image: farscapian/lncliweb:latest
+    networks:
+      - rpcnet
+      - webproxynet
+    depends_on:
+      - lnd
+    volumes:
+      - lnd-certificate-data:/config:ro
+      - lnd-macaroon-data:/macaroons
+      - lnd-log-data:/logs/lnd
+    configs:
+      - source: lncli-web_config
+        target: /lncli-web/config/defaults.js
+        uid: '0'
+        gid: '0'
+        mode: 0644
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.label == bitcoin
 
   # an nginx proxy that is hit after reaching onionservice.
   # performs SSL termination, basic HTTP authentication, proxying to backend services
@@ -198,7 +196,7 @@ services:
   bitcoinstreams:
     image: farscapian/bitcoinstreams:latest
     networks:
-      kafkanet:
+      kafka_kafkanet:
     deploy:
       mode: replicated
       replicas: 1
@@ -215,9 +213,9 @@ networks:
   clightningrpcnet: #connect to talk to clightning/lightningd
   rpcnet:
     attachable: true
-  kafkanet:
+  kafka_kafkanet:
     external: true
-    name: kafka_kafkanet
+
 
 volumes:
   ipfsdata:

@@ -26,7 +26,7 @@ sleep 5
 # wait for cloud-init to finish
 
 echo "Waiting for the LXC container to start and cloud-init to complete provisioning"
-lxc exec dockertemplate -- timeout 180 /bin/bash -c "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 2; done"
+lxc exec dockertemplate -- timeout 180 /bin/bash -c "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 5; done"
 
 sleep 5
 
