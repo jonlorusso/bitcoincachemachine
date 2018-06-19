@@ -14,7 +14,7 @@ WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
 RUN dep ensure
 RUN go install . ./cmd/...
 
-RUN mkdir -p /data
+RUN mkdir -p /data && mkdir -p /var/logs/lnd
 
 # where lnd data goes
 VOLUME /root/.lnd

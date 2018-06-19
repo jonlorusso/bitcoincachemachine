@@ -1,6 +1,6 @@
 #!/bin/bash
 
-lxc exec manager1 -- docker stack rm bitcoinstack
+lxc exec manager1 -- docker stack rm btcstack
 
 lxc delete --force bitcoin >/dev/null
 

@@ -1,5 +1,21 @@
-#!/bin/bash
+
+#!/usr/bin/env bash
+
+# exit from script if error was raised.
 set -e
+
+# error function is used within a bash function in order to send the error
+# message directly to the stderr output and exit.
+error() {
+    echo "$1" > /dev/stderr
+    exit 0
+}
+
+# return is used within bash function in order to return the value.
+return() {
+    echo "$1"
+}
+
 
 echo "lnd start script."
 
@@ -17,7 +33,6 @@ else
   exit 1
 fi
 
-echo "Waiting for bitcoind RCP interface."
 wait-for-it -t 0 bitcoindrpc:$PORT
 
 echo "Waiting for tcp://bitcoindrpc:28332 (ZMQ interface for tx & block notification)"
@@ -67,6 +82,71 @@ if [ ! -f /config/tls.cert ]; then
 fi
 
 echo "Starting: lnd --lnddir=/root/.lnd --configfile=/run/secrets/lnd.conf --tlscertpath=/config/tls.cert --tlskeypath=/config/tls.key --adminmacaroonpath=/macaroons/admin.macaroon"
-lnd --lnddir=/root/.lnd --configfile=/root/.lnd/lnd.conf --tlscertpath=/config/tls.cert --tlskeypath=/config/tls.key --adminmacaroonpath=/macaroons/admin.macaroon
+lnd --lnddir=/root/.lnd \
+    --configfile=/root/.lnd/lnd.conf \
+    --tlscertpath=/config/tls.cert \
+    --tlskeypath=/config/tls.key \
+    --adminmacaroonpath=/macaroons/admin.macaroon
+    --logdir="/var/logs/lnd"
+
 
 # lncli --tlscertpath=/config/tls.cert --macaroonpath=/macaroons/admin.macaroon getinfo
+
+
+
+
+
+
+
+
+
+
+# # set_default function gives the ability to move the setting of default
+# # env variable from docker file to the script thereby giving the ability to the
+# # user override it durin container start.
+# set_default() {
+#     # docker initialized env variables with blank string and we can't just
+#     # use -z flag as usually.
+#     BLANK_STRING='""'
+
+#     VARIABLE="$1"
+#     DEFAULT="$2"
+
+#     if [[ -z "$VARIABLE" || "$VARIABLE" == "$BLANK_STRING" ]]; then
+
+#         if [ -z "$DEFAULT" ]; then
+#             error "You should specify default variable"
+#         else
+#             VARIABLE="$DEFAULT"
+#         fi
+#     fi
+
+#    return "$VARIABLE"
+# }
+
+# # Set default variables if needed.
+# RPCUSER=$(set_default "$RPCUSER" "devuser")
+# RPCPASS=$(set_default "$RPCPASS" "devpass")
+# DEBUG=$(set_default "$DEBUG" "debug")
+# NETWORK=$(set_default "$NETWORK" "simnet")
+# CHAIN=$(set_default "$CHAIN" "bitcoin")
+# BACKEND="btcd"
+# if [[ "$CHAIN" == "litecoin" ]]; then
+#     BACKEND="ltcd"
+# fi
+
+# exec lnd \
+#     --noencryptwallet \
+
+#     "--$CHAIN.active" \
+#     "--$CHAIN.$NETWORK" \
+#     "--$CHAIN.node"="btcd" \
+#     "--$BACKEND.rpccert"="/rpc/rpc.cert" \
+#     "--$BACKEND.rpchost"="blockchain" \
+#     "--$BACKEND.rpcuser"="$RPCUSER" \
+#     "--$BACKEND.rpcpass"="$RPCPASS" \
+#     --debuglevel="$DEBUG" \
+#     "$@"
+
+
+
