@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.4'
 services:
   # listens on alias schemaregistry:8081
   schema-registry:
@@ -9,7 +9,7 @@ services:
       schemaregistrynet:
         aliases:
           - schemaregistry
-      kafkanet:
+      kafka_kafkanet:
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper1:2181,zookeeper1:2181,zookeeper1:2181
       SCHEMA_REGISTRY_HOST_NAME: schemaregistry
@@ -26,8 +26,8 @@ services:
   # listens on 8000 by default
   schema-registry-ui:
     image: landoop/schema-registry-ui:latest
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
     networks:
       - schemaregistrynet
     environment:
@@ -46,7 +46,7 @@ services:
     ports:
       - "8082:8082"
     networks:
-      kafkanet:
+      kafka_kafkanet:
       kafkarestnet:
         aliases:
           - kafkarest
@@ -73,8 +73,8 @@ services:
   #PROXY: true makes to so topicsUI proxies kafka-rest calls so we don't have to expose kafka rest to network
   topics-ui:
     image: landoop/kafka-topics-ui:latest
-    ports:
-      - "8001:8000"
+    # ports:
+    #   - "8001:8000"
     networks:
       - kafkarestnet
     depends_on:
@@ -95,7 +95,7 @@ services:
     ports:
       - "12201:12201/tcp"
     networks:
-      kafkanet:
+      kafka_kafkanet:
     configs:
       - source: logstash_config
         target: /etc/logstash.conf
@@ -117,7 +117,7 @@ services:
   #     - "8083:8083"
   #     - "514:5514"
   #   networks:
-  #     kafkanet:
+  #     kafka_kafkanet:
   #     schemaregistrynet:
   #     kafkaconnectnet:
   #       aliases:
@@ -179,7 +179,7 @@ services:
   #   ports:
   #     - "9021:9021"
   #   networks:
-  #     - kafkanet
+  #     - kafka_kafkanet
   #     - kafkaconnectnet
   #   environment:
   #     #CONTROL_CENTER_BOOTSTRAP_SERVERS: broker1:9092,broker2:9092,broker3:9092
@@ -198,9 +198,8 @@ services:
   #         - node.role == manager
 
 networks:
-  kafkanet:
+  kafka_kafkanet:
     external: true
-    name: kafka_kafkanet
 
   schemaregistrynet:
 

@@ -1,12 +1,6 @@
 
 #!/bin/bash
 
-if [[ $(env | grep BCM) = '' ]] 
-then
-  echo "BCM variables not set.  Please source a .env file."
-  exit 1
-fi
-
 # set the working directory to the location where the script is located
 # since all file references are relative to this script
 cd "$(dirname "$0")"
@@ -36,7 +30,7 @@ fi
 WORKER_TOKEN=$(lxc exec manager1 -- docker swarm join-token worker | grep token | awk '{ print $5 }')
 
 # create manager1, manager2, and manager3 from the template snapshot
-for ELASTIC_NODE in elastic1 elastic2
+for ELASTIC_NODE in elastic1
 do	
   echo "Creating $ELASTIC_NODE from elastic-template/elasticStaged"
   lxc copy elastic-template/elasticStaged $ELASTIC_NODE
@@ -46,27 +40,22 @@ do
   lxc config device add $ELASTIC_NODE dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/$ELASTIC_NODE
 
   lxc start $ELASTIC_NODE
+  
 done
 
 sleep 10
 
 # create manager1, manager2, and manager3 from the template snapshot
-for ELASTIC_NODE in elastic1 elastic2
+for ELASTIC_NODE in elastic1
 do	
-  #lxc exec $ELASTIC_NODE -- docker swarm join 10.0.0.10 --token $WORKER_TOKEN
-  lxc exec $ELASTIC_NODE -- mkdir -p /app/elastic
+  lxc exec $ELASTIC_NODE -- docker swarm join 10.0.0.10 --token $WORKER_TOKEN
+  # lxc exec $ELASTIC_NODE -- mkdir -p /app/elastic
 
+  # lxc file push ./elastic-master.yml $ELASTIC_NODE/app/elastic/docker-compose.yml
 
-  if [[ $ELASTIC_NODE = 'elastic1' ]] 
-  then
-    lxc file push ./elastic-master.yml $ELASTIC_NODE/app/elastic/docker-compose.yml
-  else
-    lxc file push ./elastic-slave.yml $ELASTIC_NODE/app/elastic/docker-compose.yml
-  fi
-
-  lxc file push ./elastic-entrypoint.sh $ELASTIC_NODE/app/elastic/up.sh
-  lxc exec $ELASTIC_NODE -- chmod +x /app/elastic/up.sh
-  lxc exec $ELASTIC_NODE -- bash -c /app/elastic/up.sh
+  # lxc file push ./elastic-entrypoint.sh $ELASTIC_NODE/app/elastic/up.sh
+  # lxc exec $ELASTIC_NODE -- chmod +x /app/elastic/up.sh
+  # lxc exec $ELASTIC_NODE -- bash -c /app/elastic/up.sh
 done
 
 
@@ -76,3 +65,4 @@ lxc file push ./managerfiles/* --recursive --create-dirs manager1/app/elastic
 # # change permissions and execute /entrypoint.sh
 lxc exec manager1 -- chmod +x /app/elastic/entrypoint.sh
 lxc exec manager1 -- bash -c /app/elastic/entrypoint.sh
+

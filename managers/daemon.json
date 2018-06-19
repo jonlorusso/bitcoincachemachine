@@ -1,3 +1,3 @@
 {
-    "registry-mirrors": ["http://proxyhost:5000", "http://proxyhost:5001"]
+    "registry-mirrors": ["http://10.254.254.2:5000"]
 }

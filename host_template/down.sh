@@ -4,7 +4,6 @@
 lxc delete --force dockertemplate >/dev/null
 
 lxc profile delete dockertemplate_profile >/dev/null
-lxc profile delete default >/dev/null
 
 lxc network delete lxdbr0
 

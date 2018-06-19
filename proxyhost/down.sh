@@ -1,12 +1,11 @@
 #!/bin/bash
 
-lxc delete --force proxyhost >/dev/null
+rm -rf /tmp/proxyhost
 
-lxc network delete proxyhostnet >/dev/null
+lxc delete --force proxyhost
 
-lxc profile delete proxyhostprofile >/dev/null
+lxc network delete proxyhostnet
 
-
-lxc storage rm bcm_proxyhost_dockerdata
+lxc profile delete proxyhostprofile
 
 sudo rm -rf /home/ubuntu/.apps/proxyhost

@@ -8,10 +8,10 @@ RUN set -ex \
 	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg wget tor procps wait-for-it \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BITCOIN_VERSION 0.16.0
-ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-0.16.0/bitcoin-0.16.0-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256 e6322c69bcc974a29e6a715e0ecb8799d2d21691d683eeb8fef65fc5f6a66477
-ENV BITCOIN_ASC_URL https://bitcoincore.org/bin/bitcoin-core-0.16.0/SHA256SUMS.asc
+ENV BITCOIN_VERSION 0.16.1
+ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-0.16.1/bitcoin-0.16.1-x86_64-linux-gnu.tar.gz
+ENV BITCOIN_SHA256 10b31d17351ff4c7929cf955e4d24a2398b0ce91509f707faf8596940c12432a
+ENV BITCOIN_ASC_URL https://bitcoincore.org/bin/bitcoin-core-0.16.1/SHA256SUMS.asc
 ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
 
 # install bitcoin binaries
@@ -23,7 +23,7 @@ RUN set -ex \
 	&& wget -qO bitcoin.asc "$BITCOIN_ASC_URL" \
 	&& gpg --verify bitcoin.asc \
 	&& tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt \
-	&& rm -rf /tmp/*
+    && rm -rf /tmp/*
 
 # create data directory
 ENV BITCOIN_DATA /data
@@ -43,8 +43,10 @@ WORKDIR /root/.bitcoin
 
 EXPOSE 8332 8333 18332 18333 18443 18444 18501 28332
 
+# entrypoint stuff
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["bitcoind"]
+

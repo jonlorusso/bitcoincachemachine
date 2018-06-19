@@ -1,15 +1,10 @@
 
 #!/bin/bash
 
-if [[ $(env | grep BCM) = '' ]] 
-then
-  echo "BCM variables not set.  Please source a .env file."
-  exit 1
-fi
-
 # set the working directory to the location where the script is located
 # since all file references are relative to this script
 cd "$(dirname "$0")"
+
 
 # create resources for workers
 # workers don't get outbound NAT access.
@@ -21,6 +16,19 @@ bash -c ./create_manager_template.sh
 
 sleep 5
 
-bash -c ./deployFromManagerSnapshot.sh
+bash -c ./stage_managers.sh
+
+sleep 20
+
+bash -c ./create_swarm.sh
 
 sleep 5
+
+# execute /entrypoint.sh
+lxc exec manager1 -- chmod +x /entrypoint.sh
+lxc exec manager1 -- bash -c /entrypoint.sh
+
+
+
+# PORT=8000 PUBLIC_IP=10.92.17.196 CONTAINER_IP=10.0.0.10
+# sudo iptables -t nat -I PREROUTING -i ens3 -p TCP -d $PUBLIC_IP --dport $PORT -j DNAT --to-destination $CONTAINER_IP:$PORT -m comment --comment "test"
