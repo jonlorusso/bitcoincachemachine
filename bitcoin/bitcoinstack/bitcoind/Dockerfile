@@ -14,7 +14,6 @@ ENV BITCOIN_SHA256 10b31d17351ff4c7929cf955e4d24a2398b0ce91509f707faf8596940c124
 ENV BITCOIN_ASC_URL https://bitcoincore.org/bin/bitcoin-core-0.16.1/SHA256SUMS.asc
 ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
 
-# install bitcoin binaries
 RUN set -ex \
 	&& cd /tmp \
 	&& wget -qO bitcoin.tar.gz "$BITCOIN_URL" \
@@ -42,6 +41,23 @@ RUN chown -R root:root /var/lib/tor
 WORKDIR /root/.bitcoin
 
 EXPOSE 8332 8333 18332 18333 18443 18444 18501 28332
+
+
+
+### lightning stuff
+RUN set -ex \
+	&& apt-get update \
+	&& apt-get install -y autoconf automake build-essential tor git libtool libgmp-dev libsqlite3-dev python python3 net-tools zlib1g-dev
+RUN mkdir /opt/lightning
+
+RUN git clone https://github.com/ElementsProject/lightning.git /opt/lightning
+WORKDIR /opt/lightning
+RUN ./configure
+RUN make
+
+COPY ./torrc /etc/tor/torrc
+
+
 
 # entrypoint stuff
 ADD entrypoint.sh /entrypoint.sh

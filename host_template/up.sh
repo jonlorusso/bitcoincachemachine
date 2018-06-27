@@ -9,7 +9,7 @@ lxc storage create bcm_data zfs size=10GB
 
 # create necessary templates
 # default profile has our root device listed
-
+lxc profile create default
 cat ./default_lxd_profile.yml | lxc profile edit default
 
 # create necessary templates

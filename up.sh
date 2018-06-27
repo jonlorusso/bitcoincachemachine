@@ -12,24 +12,53 @@ then
 fi
 
 
-lxc config set core.proxy_http $HTTP_PROXY
-lxc config set core.proxy_https $HTTPS_PROXY
-lxc config set core.proxy_ignore_hosts image-server.local
- 
+# get the default gateway, set all proxies to DG
+CACHE_STACK_IP=""
+if [[ $BCM_ENVIRONMENT = 'vm' ]]; then
+  CACHE_STACK_IP=$(/sbin/ip route | awk '/default/ { print $3 }')
+fi
+
+#configure LXD daemon
+if [[ ! -z $BCM_LXD_HTTP_PROXY ]]; then
+  echo "Setting HTTP proxy settings in lxc to $BCM_LXD_HTTP_PROXY"
+  lxc config set core.proxy_http $BCM_LXD_HTTP_PROXY
+  lxc config set core.proxy_ignore_hosts image-server.local
+else
+  lxc config set core.proxy_http ""
+fi
+
+if [[ ! -z $BCM_LXD_HTTPS_PROXY ]]; then
+  echo "Setting HTTPS proxy settings on lxc to $BCM_LXD_HTTPS_PROXY"
+  lxc config set core.proxy_https $BCM_LXD_HTTPS_PROXY
+  lxc config set core.proxy_ignore_hosts image-server.local
+else
+  lxc config set core.proxy_https ""
+fi
+
+if [[ -z $BCM_LXD_IMAGE_CACHE ]]; then
+  if [[ -z $(lxc remote list | grep lxdcache) ]]; then
+    echo "Adding lxd image server $BCM_LXD_IMAGE_CACHE"
+    lxc remote add lxdcache $BCM_LXD_IMAGE_CACHE --public
+  fi
+  
+  # 
+fi
+
+
 
 echo "creating an LXD system container template for running docker applications."
 ./host_template/up.sh
 
-echo "Deploying proxyhost"
-./proxyhost/up.sh
+# echo "Deploying proxyhost"
+# ./proxyhost/up.sh
 
-echo "Creating swarm with 3 managers"
-./managers/up.sh
+# echo "Creating swarm with 3 managers"
+# ./managers/up.sh
 
-sleep 90
+# sleep 90
 
-echo "deploying an bitcoin infrastructure."
-./bitcoin/up.sh
+# echo "deploying an bitcoin infrastructure."
+# ./bitcoin/up.sh
 
 # echo "deploying an elastic infrastructure."
 # ./elastic/up.sh
