@@ -34,15 +34,11 @@ RUN mkdir "$BITCOIN_DATA" \
 VOLUME /data
 VOLUME /logs/bitcoind
 
-EXPOSE 8332 8333 18332 18333 18443 18444
-
 RUN chown -R root:root /var/lib/tor
 
 WORKDIR /root/.bitcoin
 
 EXPOSE 8332 8333 18332 18333 18443 18444 18501 28332
-
-
 
 ### lightning stuff
 RUN set -ex \
@@ -56,8 +52,6 @@ RUN ./configure
 RUN make
 
 COPY ./torrc /etc/tor/torrc
-
-
 
 # entrypoint stuff
 ADD entrypoint.sh /entrypoint.sh

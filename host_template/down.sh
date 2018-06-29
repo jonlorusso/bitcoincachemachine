@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 lxc delete --force dockertemplate
 lxc profile delete dockertemplate_profile
 lxc profile delete default

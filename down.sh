@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 echo "Destrying elastic stuff"
 ./elastic/down.sh >/dev/null
 
@@ -16,3 +18,6 @@ echo "Destrying host template"
 ./host_template/down.sh >/dev/null
 
 sudo rm -rf /home/ubuntu/.apps
+
+lxc remote set-default local
+lxc remote rm lxdcache

@@ -1,9 +1,11 @@
 #!/bin/bash
 
-echo "Building and pushing bitcoind."
-#this step prepares custom images
-docker build -t farscapian/bitcoind:latest ./bitcoind/
-docker push farscapian/bitcoind:latest
+set -e
+
+# echo "Building and pushing bitcoind."
+# #this step prepares custom images
+# docker build -t farscapian/bitcoind:latest ./bitcoind/
+# docker push farscapian/bitcoind:latest
 
 # echo "Building and pushing lnd."
 # #this step prepares custom images
@@ -16,10 +18,10 @@ docker push farscapian/bitcoind:latest
 # docker push farscapian/lncliweb:latest
 
 
-# echo "Building and pushing farscapian/clightning"
-# # # adds start script for waiting on lnd rpc to come online
-# docker build -t farscapian/clightning:latest ./clightning/
-# docker push farscapian/clightning:latest
+echo "Building and pushing farscapian/clightning"
+# # adds start script for waiting on lnd rpc to come online
+docker build -t farscapian/lightningd:latest ./lightningd/
+docker push farscapian/lightningd:latest
 
 # echo "Building and pushing bitcoin streams app."
 # docker build -t farscapian/bitcoinstreams:latest ./streams/
