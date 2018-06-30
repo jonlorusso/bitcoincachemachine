@@ -98,6 +98,7 @@ services:
       BITCOIND_CHAIN: ${CHAIN:-testnet}
     volumes:
       - lightningd-data:/root/.lightning
+      - lightningd-log-data:/logs/lightningd
       - bitcoind-data:/etc/bitcoin
     depends_on:
       - bitcoind
@@ -226,7 +227,9 @@ volumes:
   lnd-log-data:
 
   lightningd-data:
+  lightningd-log-data:
 
+    
   onionservice-data:
     driver: local
   
@@ -238,7 +241,7 @@ configs:
   onionproxyconf:
     file: ./onionproxy/nginx.conf
   lncli-web_config:
-    file: ./lncli-web.lncliweb.conf.js
+    file: ./lncliweb/lncli-web.lncliweb.conf.js
   bitcoindtorproxy-config:
     file: ./bitcoind/torrc.conf
 

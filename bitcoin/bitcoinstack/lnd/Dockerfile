@@ -1,4 +1,4 @@
-FROM golang:1.10
+FROM golang:1.10.3
 
 # lnd p2p, grpc server
 EXPOSE 9735 10009
@@ -30,8 +30,7 @@ VOLUME /logs
 
 WORKDIR /root/.lnd
 
-ADD entrypoint.sh /entrypoint.sh
+ADD ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
 
 ENTRYPOINT ["/entrypoint.sh"]

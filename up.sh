@@ -44,7 +44,7 @@ if [[ ! -z $BCM_LXD_IMAGE_CACHE ]]; then
   if [[ -z $(lxc remote list | grep lxdcache) ]]; then
     echo "Adding lxd image server $BCM_LXD_IMAGE_CACHE"
     lxc remote add lxdcache $BCM_LXD_IMAGE_CACHE --public
-    #lxc remote set-default lxdcache
+    lxc image copy lxdcache:bcm-bionic local: --alias bcm-bionic
   fi
 fi
 
@@ -59,10 +59,8 @@ echo "Deploying proxyhost"
 echo "Creating swarm with 3 managers"
 ./managers/up.sh
 
-# sleep 90
-
 # echo "deploying an bitcoin infrastructure."
 ./bitcoin/up.sh
 
-# echo "deploying an elastic infrastructure."
+# # echo "deploying an elastic infrastructure."
 # ./elastic/up.sh

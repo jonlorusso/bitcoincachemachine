@@ -40,16 +40,16 @@ WORKDIR /root/.bitcoin
 
 EXPOSE 8332 8333 18332 18333 18443 18444 18501 28332
 
-### lightning stuff
-RUN set -ex \
-	&& apt-get update \
-	&& apt-get install -y autoconf automake build-essential tor git libtool libgmp-dev libsqlite3-dev python python3 net-tools zlib1g-dev
-RUN mkdir /opt/lightning
+# ### lightning stuff
+# RUN set -ex \
+# 	&& apt-get update \
+# 	&& apt-get install -y autoconf automake build-essential tor git libtool libgmp-dev libsqlite3-dev python python3 net-tools zlib1g-dev
+# RUN mkdir /opt/lightning
 
-RUN git clone https://github.com/ElementsProject/lightning.git /opt/lightning
-WORKDIR /opt/lightning
-RUN ./configure
-RUN make
+# RUN git clone https://github.com/ElementsProject/lightning.git /opt/lightning
+# WORKDIR /opt/lightning
+# RUN ./configure
+# RUN make
 
 COPY ./torrc /etc/tor/torrc
 
@@ -59,4 +59,3 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["bitcoind"]
-

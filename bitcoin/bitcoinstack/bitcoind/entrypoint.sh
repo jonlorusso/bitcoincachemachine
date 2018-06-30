@@ -11,12 +11,6 @@ set -e
 #    sleep 10
 # done
 
-#start tor service
-#tor
-
-#first, wait for TOR proxy
-
-
 #r un tor process using torrc config file
 # which should be configured to run as daemon
 echo "Starting tor on $HOSTNAME"
@@ -47,12 +41,12 @@ if [[ $BITCOIND_CHAIN = "mainnet" ]]
 then
   echo "Starting bitcoind on mainnet."
   echo "running:  bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin -assumevalid=00000000000000000009f1f03bc2423aebb73b148a227a176f4ce9ad7cfaed52"
-  bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin -assumevalid=00000000000000000009f1f03bc2423aebb73b148a227a176f4ce9ad7cfaed52
+  bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin
 elif [[ $BITCOIND_CHAIN = "testnet" ]]
 then
   echo "Starting bitcoind on testnet."
   echo "bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin -assumevalid=00000000000001db206ff4c7c82b9faad4ae60232f7464c6507368f5de4304dd"
-  bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin -assumevalid=00000000000001db206ff4c7c82b9faad4ae60232f7464c6507368f5de4304dd
+  bitcoind -conf=/home/bitcoin/.bitcoin/bitcoin.conf -datadir=/home/bitcoin/.bitcoin
 else
   echo "Invalid BITCOIND_CHAIN value.  Quitting."
   exit 1
