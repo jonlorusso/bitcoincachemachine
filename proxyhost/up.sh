@@ -14,12 +14,12 @@ cat ./lxd_profile_proxy_host.yml | lxc profile edit proxyhostprofile
 
 ## start the managers
 lxc copy dockertemplate/dockerSnapshot proxyhost
-lxc profile apply proxyhost default,proxyhostprofile
+lxc profile apply proxyhost docker,proxyhostprofile
 
 # bind mount for /var/lib/docker
 # TODO get this to work with ZFS backend.
-mkdir -p /home/ubuntu/.apps/proxyhost
-lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/proxyhost
+mkdir -p /home/multipass/.apps/proxyhost
+lxc config device add proxyhost dockerdisk disk path=/var/lib/docker source=/home/multipass/.apps/proxyhost
 
 # push environment variables passed through by provisioner
 # if running bare-metal, must source your environment prior to

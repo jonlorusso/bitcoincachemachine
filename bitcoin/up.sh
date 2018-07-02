@@ -11,11 +11,11 @@ lxc profile create bitcoinprofile
 cat ./bitcoin_lxd_profile.yml | lxc profile edit bitcoinprofile
 
 lxc copy dockertemplate/dockerSnapshot bitcoin
-lxc profile apply bitcoin default,bitcoinprofile
+lxc profile apply bitcoin docker,bitcoinprofile
 
 # bind mount
-mkdir -p /home/ubuntu/.apps/bitcoin
-lxc config device add bitcoin dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/bitcoin
+mkdir -p /home/multipass/.apps/bitcoin
+lxc config device add bitcoin dockerdisk disk path=/var/lib/docker source=/home/multipass/.apps/bitcoin
 
 # push docker.json for registry mirror settings
 lxc file push ./daemon.json bitcoin/etc/docker/daemon.json

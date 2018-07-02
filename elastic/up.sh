@@ -16,7 +16,7 @@ else
   cat ./elastic_lxd_profile.yml | lxc profile edit elastic_profile
 
   lxc copy dockertemplate/dockerSnapshot elastic-template
-  lxc profile apply elastic-template default,elastic_profile
+  lxc profile apply elastic-template docker,elastic_profile
 
   # push docker.json for registry mirror settings
   lxc file push ./daemon.json elastic-template/etc/docker/daemon.json
@@ -35,9 +35,9 @@ do
   echo "Creating $ELASTIC_NODE from elastic-template/elasticStaged"
   lxc copy elastic-template/elasticStaged $ELASTIC_NODE
 
-  echo "Bind mounting /var/lib/docker in $ELASTIC_NODE to /home/ubuntu/.apps/$ELASTIC_NODE"
-  mkdir -p /home/ubuntu/.apps/$ELASTIC_NODE
-  lxc config device add $ELASTIC_NODE dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/$ELASTIC_NODE
+  echo "Bind mounting /var/lib/docker in $ELASTIC_NODE to /home/multipass/.apps/$ELASTIC_NODE"
+  mkdir -p /home/multipass/.apps/$ELASTIC_NODE
+  lxc config device add $ELASTIC_NODE dockerdisk disk path=/var/lib/docker source=/home/multipass/.apps/$ELASTIC_NODE
 
   lxc start $ELASTIC_NODE
   

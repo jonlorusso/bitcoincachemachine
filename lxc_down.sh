@@ -17,7 +17,7 @@ echo "Destroying proxyhost"
 echo "Destrying host template"
 ./host_template/down.sh >/dev/null
 
-sudo rm -rf /home/ubuntu/.apps
+sudo rm -rf /home/multipass/.apps
 
 lxc remote set-default local
 lxc remote rm lxdcache

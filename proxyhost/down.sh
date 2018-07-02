@@ -8,4 +8,4 @@ lxc network delete proxyhostnet
 
 lxc profile delete proxyhostprofile
 
-sudo rm -rf /home/ubuntu/.apps/proxyhost
+sudo rm -rf /home/multipass/.apps/proxyhost
