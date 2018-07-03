@@ -29,8 +29,15 @@ WORKER_TOKEN=$(lxc exec manager1 -- docker swarm join-token worker | grep token 
 
 lxc exec bitcoin -- docker swarm join 10.0.0.10 --token $WORKER_TOKEN
 
-lxc exec manager1 -- mkdir -p /app/bitcoinstack
-lxc file push ./bitcoinstack/* --recursive --create-dirs manager1/app/bitcoinstack/
+
+# bind mount the appropriate code directory into the lxc container
+lxc config device add manager1 codebindmount disk path=/app source=$(pwd)
+
+
+
+
+# lxc exec manager1 -- mkdir -p /app/bitcoinstack
+# lxc file push ./bitcoinstack/* --recursive --create-dirs manager1/app/bitcoinstack/
 
 # # change permissions and execute /entrypoint.sh
 lxc exec manager1 -- chmod +x /app/bitcoinstack/up.sh

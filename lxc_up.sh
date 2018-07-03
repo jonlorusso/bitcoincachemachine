@@ -3,6 +3,9 @@
 # exit script if there's an error anywhere
 set -e
 
+# set lxd to defaults
+lxd init --auto
+
 # set the working directory to the location where the script is located
 # since all file references are relative to this script
 cd "$(dirname "$0")"
@@ -12,9 +15,6 @@ then
   echo "BCM variables not set. Please source a .env file."
   exit 1
 fi
-
-# get lxd in auto config state
-lxd init --auto
 
 # get the default gateway, set all proxies to DG
 CACHE_STACK_IP=""
@@ -61,7 +61,7 @@ echo "Creating swarm with 3 managers"
 ./managers/up.sh
 
 # echo "deploying an bitcoin infrastructure."
-./bitcoin/up.sh
+# ./bitcoin/up.sh
 
 # # echo "deploying an elastic infrastructure."
 # ./elastic/up.sh

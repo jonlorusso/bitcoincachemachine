@@ -12,4 +12,4 @@ multipass exec $VM_NAME -- mkdir -p /home/multipass/bcm
 
 multipass mount ~/git/github/bitcoincachemachine $VM_NAME:/home/multipass/bcm
 
-# multipass exec $VM_NAME -- bcm/lxc_up.sh
+multipass exec $VM_NAME -- bcm/lxc_up.sh

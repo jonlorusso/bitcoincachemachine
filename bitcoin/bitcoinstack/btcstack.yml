@@ -88,7 +88,7 @@ services:
   # C++ implementation of lightning.
    #farscapian/clightning:latest
   lightningd:
-    image: elementsproject/lightningd
+    image: farscapian/lightningd:latest
     networks:
       bitcoindrpcnet:
       lightningdrpcnet:

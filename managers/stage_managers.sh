@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set the working directory to the location where the script is located
+# since all file references are relative to this script
+cd "$(dirname "$0")"
 
 # create manager1, manager2, and manager3 from the template snapshot
 for MANAGER in manager1 manager2 manager3
