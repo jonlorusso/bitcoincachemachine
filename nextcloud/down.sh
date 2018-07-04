@@ -8,7 +8,7 @@ lxc network delete nextcloudBridge
 
 sleep 2
 
-sudo rm -rf /home/ubuntu/.apps/nextcloud
+sudo rm -rf /home/multipass/.apps/nextcloud
 
 sleep 5
 

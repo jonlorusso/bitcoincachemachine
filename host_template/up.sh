@@ -7,10 +7,9 @@ cd "$(dirname "$0")"
 lxc network create lxdbr0
 lxc storage create bcm_data zfs size=10GB
 
-# create necessary templates
-# default profile has our root device listed
-
-cat ./default_lxd_profile.yml | lxc profile edit default
+# default profile has our root block device mapped to ZFS bcm_data
+lxc profile create docker
+cat ./docker_lxd_profile.yml | lxc profile edit docker
 
 # create necessary templates
 lxc profile create dockertemplate_profile
@@ -18,7 +17,7 @@ cat ./lxd_profile_docker_template.yml | lxc profile edit dockertemplate_profile
 
 #create the container (ubuntu:18.04)
 #lxc init ubuntu:17.10 -p default -p dockertemplate_profile dockertemplate
-lxc init ubuntu:18.04 -p default -p dockertemplate_profile dockertemplate
+lxc init ubuntu:18.04 -p docker -p dockertemplate_profile dockertemplate
 
 lxc start dockertemplate
 

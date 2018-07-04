@@ -1,0 +1,92 @@
+version: '3.6'
+services:
+  squid:
+    image: minimum2scp/squid:latest
+    ports:
+      - "3128:3128"
+    volumes:
+       - squid-data:/var/spool/squid3
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  # purpose is to serve wpad.dat to hosts getting proxy info via dhcp
+  nginxproxy:
+    image: nginx:1.13.9-perl
+    ports:
+      - "81:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    configs:
+      - source: wpad_dat
+        target: /usr/share/nginx/html/wpad.dat
+        uid: '33'
+        gid: '33'
+        mode: 0777
+      - source: nginxconf
+        target: /etc/nginx/nginx.conf
+        uid: '33'
+        gid: '33'
+        mode: 0640
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  registry-mirror:
+    image: registry:2.6.2
+    ports: 
+      - "5000:5000"
+    volumes:
+      - registrymirrorimage-data:/data
+    environment:
+      REGISTRY_PROXY_REMOTEURL: https://registry-1.docker.io
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_ADDR: :5000
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  elastic-registry-mirror:
+    image: registry:2.6.2
+    ports: 
+      - "5001:5001"
+    volumes:
+      - elasticregistrymirrorimage-data:/data
+    environment:
+      REGISTRY_PROXY_REMOTEURL: https://docker.elastic.co
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_ADDR: :5001
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  # ipfscache:
+  #   image: ipfs/go-ipfs:latest
+  #   ports:
+  #     - "4001:4001/tcp"
+  #     #- "5001:5001/tcp" # webconsole
+  #     - "8080:8080/tcp"
+  #     - "8081:8081/tcp"
+  #     - "4002:4002/udp"
+  #   volumes:
+  #     - ipfs-data:/data/ipfs
+  #   environment:
+  #     IPFS_PATH: /data/ipfs
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+
+
+volumes:
+  squid-data:
+  registrymirrorimage-data:
+    driver: local
+  elasticregistrymirrorimage-data:
+    driver: local
+  ipfs-data:
+
+configs:
+  wpad_dat:
+    file: ./wpad.dat
+  nginxconf:
+    file: ./nginx.conf

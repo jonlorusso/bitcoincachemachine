@@ -4,7 +4,7 @@
 # set the working directory to the location where the script is located
 cd "$(dirname "$0")"
 
-mkdir -p /home/ubuntu/.apps/nextcloud
+mkdir -p /home/multipass/.apps/nextcloud
 
 lxc network create nextcloudBridge ipv4.nat=true 
 
@@ -13,8 +13,8 @@ lxc profile create nextcloud
 cat ./nextcloud.yml | lxc profile edit nextcloud
 
 lxc copy dockertemplate/dockerSnapshot nextcloud
-lxc profile apply nextcloud dockerpriv,nextcloud
-lxc config device add nextcloud dockerdisk disk path=/var/lib/docker source=/home/ubuntu/.apps/nextcloud
+lxc profile apply nextcloud docker,nextcloud
+lxc config device add nextcloud dockerdisk disk path=/var/lib/docker source=/home/multipass/.apps/nextcloud
 
 #sets docker daemon to use the managers for registry operations
 lxc file push ./daemon.json nextcloud/etc/docker/daemon.json

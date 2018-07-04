@@ -15,7 +15,7 @@ lxc profile delete manager3_profile >/dev/null
 lxc profile delete manager_template_profile >/dev/null
 
 
-sudo rm -rf /home/ubuntu/.apps/manager1
-sudo rm -rf /home/ubuntu/.apps/manager2
-sudo rm -rf /home/ubuntu/.apps/manager3
+sudo rm -rf /home/multipass/.apps/manager1
+sudo rm -rf /home/multipass/.apps/manager2
+sudo rm -rf /home/multipass/.apps/manager3
 

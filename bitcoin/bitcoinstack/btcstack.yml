@@ -1,33 +1,31 @@
 version: '3.4'
 services:
   # seeds blockchain data to other nodes.
-  ipfscache:
-    image: ipfs/go-ipfs:latest
-    volumes:
-      - ipfsdata:/data/ipfs
-    environment:
-      IPFS_PATH: /data/ipfs
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: 
-          - engine.labels.purpose == bitcoin
+  # ipfscache:
+  #   image: ipfs/go-ipfs:latest
+  #   volumes:
+  #     - ipfsdata:/data/ipfs
+  #   environment:
+  #     IPFS_PATH: /data/ipfs
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #     placement:
+  #       constraints: 
+  #         - engine.labels.purpose == bitcoin
 
   # TODO initialize wallet interface.
   bitcoind:
     image: farscapian/bitcoind:latest
     hostname: bitcoind
     volumes:
-      - bitcoind-testnet-data:/data
+      - /bitcoin:/data
       - bitcoind-log-data:/logs/bitcoind
       - bitcoind-cookie-data:/bitcoindcookie
     environment:
       BITCOIND_CHAIN: ${BCM_BITCOIN_CHAIN:-testnet}
-    depends_on:
-      - torproxy
     networks:
-      rpcnet:
+      bitcoindrpcnet:
         aliases:
           - bitcoindrpc
     secrets:
@@ -58,7 +56,7 @@ services:
       - "9735:9735"
     # TODO ensure LND is going over TOR (when avaialable)
     networks:
-      rpcnet:
+      bitcoindrpcnet:
       lndrpcnet:
         aliases:
           - lndrpc
@@ -87,43 +85,42 @@ services:
           - engine.labels.purpose == bitcoin
 
 
-  # # C++ implementation of lightning.
-  # clightning:
-  #   image: farscapian/clightning:latest
-  #   hostname: clightning
-  #   networks:
-  #     rpcnet:
-  #     clightningrpcnet:
-  #       aliases:
-  #         - clightningrpc
-  #   environment:
-  #     BITCOIND_CHAIN: ${CHAIN:-testnet}
-  #   volumes:
-  #     - clightning-data:/root/.lnd
-  #     # - clightning-certificate-data:/config
-  #     # - clightning-macaroon-data:/macaroons
-  #     # - clightning-log-data:/logs/lnd
-  #   depends_on:
-  #     - bitcoind
-  #   secrets:
-  #     - source: clightning_conf
-  #       target: /root/.lightning/config
-  #       uid: '0'
-  #       gid: '0'
-  #       mode: 0444
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     placement:
-  #       constraints: 
-  #         - engine.labels.purpose == bitcoin
+  # C++ implementation of lightning.
+   #farscapian/clightning:latest
+  lightningd:
+    image: farscapian/lightningd:latest
+    networks:
+      bitcoindrpcnet:
+      lightningdrpcnet:
+        aliases:
+          - lightningdrpc
+    environment:
+      BITCOIND_CHAIN: ${CHAIN:-testnet}
+    volumes:
+      - lightningd-data:/root/.lightning
+      - lightningd-log-data:/logs/lightningd
+      - bitcoind-data:/etc/bitcoin
+    depends_on:
+      - bitcoind
+    secrets:
+      - source: lightningd_conf
+        target: /root/.lightning/config
+        uid: '0'
+        gid: '0'
+        mode: 0444
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - engine.labels.purpose == bitcoin
 
   # Provides admin interface to lnd
   # listens on 8280
   lncli-web:
     image: farscapian/lncliweb:latest
     networks:
-      - rpcnet
+      - bitcoindrpcnet
       - webproxynet
     depends_on:
       - lnd
@@ -208,8 +205,8 @@ networks:
   onionnet: #how external peers reach bitcoind for block relay and peer network
   tornet:  #how bitcoin connects to peer network
   lndrpcnet:  #connect to this if you need to communicate with lnd RPC
-  clightningrpcnet: #connect to talk to clightning/lightningd
-  rpcnet:
+  lightningdrpcnet: #connect to talk to clightning/lightningd
+  bitcoindrpcnet:
     attachable: true
   kafka_kafkanet:
     external: true
@@ -219,9 +216,7 @@ volumes:
   ipfsdata:
     external: true
   
-  bitcoind-testnet-data:
-    external: true
-  bitcoind-mainnet-data:
+  bitcoind-data:
     external: true
   bitcoind-log-data:
   bitcoind-cookie-data:
@@ -231,8 +226,10 @@ volumes:
   lnd-data:
   lnd-log-data:
 
-  clightning-data:
+  lightningd-data:
+  lightningd-log-data:
 
+    
   onionservice-data:
     driver: local
   
@@ -244,7 +241,7 @@ configs:
   onionproxyconf:
     file: ./onionproxy/nginx.conf
   lncli-web_config:
-    file: ./lncli-web.lncliweb.conf.js
+    file: ./lncliweb/lncli-web.lncliweb.conf.js
   bitcoindtorproxy-config:
     file: ./bitcoind/torrc.conf
 
@@ -256,5 +253,5 @@ secrets:
     file: "./lnd/lnd-${CHAIN:-testnet}.conf"
   # nginxbasicauth:
   #   file: ./secrets/httpusers.txt
-  clightning_conf:
-    file:  ./clightning/clightning.conf
+  lightningd_conf:
+    file:  ./lightningd/lightningd-${CHAIN:-testnet}.conf

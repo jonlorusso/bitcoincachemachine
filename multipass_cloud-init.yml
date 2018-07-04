@@ -1,0 +1,24 @@
+#cloud-config
+package_update: true
+#package_upgrade: true
+
+# all lxc system images are backed by ZFS
+# but each system container /var/lib/docker is bind mounted
+packages:
+  - zfsutils-linux
+  - jq
+  - htop
+  - slurm
+  - tcptrack
+
+## Uncomment if you have a HTTP/HTTPS Proxy or Docker Registry Mirror on your local network
+## below, proxy.local is running squid on TCP 3121, Docker Registry is running on port 5000.
+## BCM_ENVIRONMENT guides subsequent scripts in proper provisioning based on whether you're
+## running bare-metal or in a VM via cloud-init.  Options are 'vm' and 'baremetal'
+write_files:
+  - path: /etc/environment
+    permissions: 0644
+    content: |
+      BCM_BITCOIN_CHAIN=testnet
+      BCM_DEBUG=true
+      BCM_CACHE_STACK=gw

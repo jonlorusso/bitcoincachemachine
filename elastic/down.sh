@@ -6,7 +6,7 @@ lxc exec manager1 -- docker stack rm elastic
 for NODE in elastic1
 do	
     lxc delete --force $NODE
-    sudo rm -rf /home/ubuntu/.apps/$NODE
+    sudo rm -rf /home/multipass/.apps/$NODE
     lxc exec manager1 -- docker node rm $NODEs
 done
 
