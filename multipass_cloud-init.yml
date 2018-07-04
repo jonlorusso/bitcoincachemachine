@@ -19,7 +19,6 @@ write_files:
   - path: /etc/environment
     permissions: 0644
     content: |
-      BCM_LOCAL_CACHE=true
-      BCM_LOCAL_CACHE_IP=
       BCM_BITCOIN_CHAIN=testnet
       BCM_DEBUG=true
+      BCM_CACHE_STACK=gw

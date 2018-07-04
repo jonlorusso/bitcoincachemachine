@@ -19,7 +19,7 @@ services:
     image: farscapian/bitcoind:latest
     hostname: bitcoind
     volumes:
-      - bitcoind-data:/data
+      - /bitcoin:/data
       - bitcoind-log-data:/logs/bitcoind
       - bitcoind-cookie-data:/bitcoindcookie
     environment:
