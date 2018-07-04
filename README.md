@@ -11,7 +11,7 @@ Bitcoin Cache Machine is a software-defined data center designed for individuals
 
 ## Why does Bitcoin Cache Machine Exist?
 
-If you're invoved with Bitcoin or consider yourself a Bitcoin Maximalist, you will undoubtedly understand the importance of running your own Bitcoin node software. Running a Bitcoin full node is easy enough--just download the software and run it on your home machine. Although running your own Bitcoin full node provides the best form of privacy, there are many other areas where your privacy can be leaked, such as using a third party block explorer or wallet software. 
+If you're involved with Bitcoin or consider yourself a Bitcoin Maximalist, you will undoubtedly understand the importance of running your own Bitcoin node software. Running a Bitcoin full node is easy enough--just download the software and run it on your home machine. Although running your own Bitcoin full node provides the best form of privacy, there are many other areas where your privacy can be leaked, such as using a third party block explorer or wallet software. 
 
 BCM is meant to bridge that gap by providing a fully automated mechanism to deploy your own Bitcoin infrastructure. BCM is pre-configured to protect user's privacy. Services provided by BCM are exposed on the TOR overlay network providing a very cloud-like experience while anonymizing your IP information and providing end-to-end confidentiality (encryption).
 
